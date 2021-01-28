@@ -1,0 +1,6 @@
+# Project exclude paths
+/.gradle/
+/module-core/build/
+/module-core/build/classes/java/main/
+/module-core/build/classes/java/test/
+/module-core/src/main/resources/static/node_modules/
