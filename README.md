@@ -12,4 +12,4 @@
 학습에 대한 욕구는 높아지지만, 플랫폼은 점차 분산이 되고 있다. 공부를 시작할 때, 책을 읽고, 유튜브를 보고, 인터넷 강의를 듣고, 현장강의를 듣지만 미디어와 플랫폼은 전부 제각각이다.이로인해 개인으로서는 정리의 길을 잃어버리는 경우가 많다. 로드맵 서비스는 길잡이가 되어 하나의 맵에 노드를 설정하여 하나의 주제에 맞는 콘텐츠별 링크, 텍스트, 포스트, 임베디드 동영상을 제공하며 각 링크마다 그에 맞는 리뷰를 작성할 수 있게 만든다. 또한 누군가가 만든 로드맵에 참여를 할 수 있으며 진척도를 확인할 수 있다.
 
 <h2>스케쥴러</h2>
-<a href="https://docs.google.com/spreadsheets/d/18YoOEwdi9D2XqdyRKNc9kOoKK-YFZt9xhP3aKwqv1ak/edit#gid=0">스케쥴</a>
+<a href="https://docs.google.com/spreadsheets/d/18YoOEwdi9D2XqdyRKNc9kOoKK-YFZt9xhP3aKwqv1ak/edit?usp=sharing">스케쥴</a>
