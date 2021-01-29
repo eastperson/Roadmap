@@ -88,7 +88,6 @@ subprojects {
         testAnnotationProcessor 'org.projectlombok:lombok'
         // https://mvnrepository.com/artifact/org.hibernate/hibernate-validator
         compile group: 'org.hibernate', name: 'hibernate-validator', version: '6.1.0.Final'
-        compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5'
         // https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-java8time
         compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-java8time'
 
