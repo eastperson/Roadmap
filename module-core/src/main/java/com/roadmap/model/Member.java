@@ -2,6 +2,7 @@ package com.roadmap.model;
 
 import lombok.*;
 import org.apache.tomcat.jni.Local;
+import org.springframework.data.util.Lazy;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,7 +10,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Entity @ToString(exclude = "roleSet")
+@NamedEntityGraph(name = "Member.withAll", attributeNodes = {
+        @NamedAttributeNode("location"),
+        @NamedAttributeNode("tags")
+})
+@NamedEntityGraph(name = "Member.withLoc", attributeNodes = {
+        @NamedAttributeNode("location")
+})
+@Entity @ToString(exclude = {"roleSet","location"})
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor
 public class Member extends BaseEntity{
@@ -54,7 +62,14 @@ public class Member extends BaseEntity{
 
     private boolean roadmapUpdatedByWeb = true;
 
+    @ManyToMany
+    private Set<Tag> tags = new HashSet<>();
+
     private boolean snsLginYn;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "loc_id")
+    private Location location;
 
     @ElementCollection
     @Builder.Default

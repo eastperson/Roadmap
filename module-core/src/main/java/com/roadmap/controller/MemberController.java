@@ -15,6 +15,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -99,5 +100,18 @@ public class MemberController {
 
         memberService.sendSignUpConfirmEmail(member);
         return "redirect:/";
+    }
+
+    @GetMapping("/profile/{nickname}")
+    public String profileView(@PathVariable String nickname, Model model, @CurrentUser Member curMember){
+        Member member = memberRepository.findByNickname(nickname);
+        if(member == null) {
+            model.addAttribute("error","member.error");
+            return "member/profile";
+        }
+
+        model.addAttribute("isOwner",member.equals(curMember));
+        model.addAttribute(member);
+        return "member/profile";
     }
 }

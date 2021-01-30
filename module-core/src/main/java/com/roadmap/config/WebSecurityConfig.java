@@ -17,10 +17,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/","/login","/h2-console/**","/sign-up").permitAll()
+                .antMatchers("/","/login","/h2-console/**","/sign-up","/popup/jusoPopup").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
                 .anyRequest().authenticated();
-
+        http.csrf().ignoringAntMatchers("/popup/jusoPopup","/settings/location");
         http.formLogin().loginPage("/login").permitAll();
         http.logout().logoutSuccessUrl("/");
     }

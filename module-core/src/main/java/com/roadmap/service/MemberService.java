@@ -2,8 +2,10 @@ package com.roadmap.service;
 
 import com.roadmap.config.AppProperties;
 import com.roadmap.dto.email.EmailMessage;
-import com.roadmap.dto.member.SignUpForm;
+import com.roadmap.dto.member.*;
+import com.roadmap.model.Location;
 import com.roadmap.model.Member;
+import com.roadmap.model.Tag;
 import com.roadmap.model.UserMember;
 import com.roadmap.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -92,5 +96,40 @@ public class MemberService implements UserDetailsService {
     public void completeSignUp(Member member) {
         member.completeSignUp();
         login(member);
+    }
+
+    public void updateProfile(Member member, ProfileForm profileForm) {
+        modelMapper.map(profileForm,member);
+        memberRepository.save(member);
+    }
+
+    public void updatePassword(Member member, String password) {
+        member.setPassword(passwordEncoder.encode(password));
+        memberRepository.save(member);
+    }
+
+    public void updateNotification(Member member, NotificationForm notificationForm) {
+        modelMapper.map(notificationForm,member);
+        memberRepository.save(member);
+    }
+
+    public Set<Tag> getTags(Member member) {
+        Optional<Member> byId = memberRepository.findById(member.getId());
+        return byId.orElseThrow().getTags();
+    }
+
+    public void removeTag(Member member, Tag tag){
+        Optional<Member> byId = memberRepository.findById(member.getId());
+        byId.ifPresent(a -> a.getTags().remove(tag));
+    }
+    public void addTag(Member member, Tag tag){
+        Optional<Member> byId = memberRepository.findById(member.getId());
+        byId.ifPresent(a -> a.getTags().add(tag));
+    }
+
+    public void updateLocation(Member member, LocationForm locationForm){
+        Member withLoc = memberRepository.findWithLocByNickname(member.getNickname());
+        withLoc.setLocation(modelMapper.map(locationForm,Location.class));
+        memberRepository.save(withLoc);
     }
 }
