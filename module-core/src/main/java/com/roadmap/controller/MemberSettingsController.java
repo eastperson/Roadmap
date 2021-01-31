@@ -135,8 +135,7 @@ public class MemberSettingsController {
 
         memberService.addTag(member, tag);
 
-
-        log.info("add post member tags : " + memberService.getTags(member));
+        log.info("member tag add..........................");
 
         return ResponseEntity.ok().build();
     }
@@ -164,7 +163,7 @@ public class MemberSettingsController {
         model.addAttribute("kakaoJsKey",appProperties.getKakaoJsKey());
         model.addAttribute("kakaoRestKey",appProperties.getKakaoRestKey());
 
-        return "/member/settings/location";
+        return "member/settings/location";
     }
 
     @PostMapping("/location")
