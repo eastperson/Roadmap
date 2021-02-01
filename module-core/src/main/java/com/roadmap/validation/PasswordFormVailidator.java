@@ -1,6 +1,6 @@
 package com.roadmap.validation;
 
-import com.roadmap.dto.member.PasswordForm;
+import com.roadmap.dto.member.form.PasswordForm;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

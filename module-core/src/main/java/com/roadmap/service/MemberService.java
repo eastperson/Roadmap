@@ -2,7 +2,10 @@ package com.roadmap.service;
 
 import com.roadmap.config.AppProperties;
 import com.roadmap.dto.email.EmailMessage;
-import com.roadmap.dto.member.*;
+import com.roadmap.dto.member.form.LocationForm;
+import com.roadmap.dto.member.form.NotificationForm;
+import com.roadmap.dto.member.form.ProfileForm;
+import com.roadmap.dto.member.form.SignUpForm;
 import com.roadmap.model.*;
 import com.roadmap.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

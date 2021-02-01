@@ -1,6 +1,7 @@
 package com.roadmap.handler;
 
 import com.roadmap.dto.member.AuthMemberDTO;
+import com.roadmap.model.MemberRole;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Log4j2
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
@@ -36,11 +39,23 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("password encoder in login success handler : " + this.passwordEncoder);
 
         boolean passwordResult = this.passwordEncoder.matches("1111","{noop}"+authMember.getPassword());
+        Set<String> roleNames = new HashSet<>();
+        authMember.getAuthorities().forEach(grantedAuthority -> {
+                roleNames.add(grantedAuthority.getAuthority());
+        });
+
+        log.info("role names : " + roleNames);
+
+        String redirectUrl = "/";
+
+        if (roleNames.contains("ROLE_ADMIN")){
+            redirectUrl = "/admin";
+        }
 
         if(fromSocial && passwordResult) {
-            redirectStrategy.sendRedirect(request,response,"/settings/password");
-        } else {
-            redirectStrategy.sendRedirect(request,response,"/");
+            redirectUrl = "/settings/password";
         }
+
+        redirectStrategy.sendRedirect(request,response,redirectUrl);
     }
 }

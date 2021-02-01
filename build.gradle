@@ -68,7 +68,7 @@ subprojects {
         compile('org.springframework.boot:spring-boot-starter-jdbc')
         testCompile('org.springframework.boot:spring-boot-starter-test')
         runtimeOnly 'com.h2database:h2'
-        //runtimeOnly 'org.postgresql:postgresql'
+        runtimeOnly 'org.postgresql:postgresql'
 
         // 추가된 설정
         implementation 'org.springframework.boot:spring-boot-devtools:2.3.8.RELEASE'

@@ -1,13 +1,11 @@
 package com.roadmap.validation;
 
-import com.roadmap.dto.member.SignUpForm;
+import com.roadmap.dto.member.form.SignUpForm;
 import com.roadmap.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 
 @Component

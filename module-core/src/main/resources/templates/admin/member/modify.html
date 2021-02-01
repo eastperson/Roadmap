@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/admin/layout.html :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+
+        </div>
+        <div th:replace="fragments.html :: date-time"></div>
+        <!-- /.container-fluid -->
+        <!-- Custom scripts for all pages-->
+        <script src="/node_modules/startbootstrap-sb-admin-2/js/sb-admin-2.min.js"></script>
+
+        <!-- Page level plugins -->
+        <script src="/node_modules/startbootstrap-sb-admin-2/vendor/datatables/jquery.dataTables.min.js"></script>
+        <script src="/node_modules/startbootstrap-sb-admin-2/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+        <!-- Page level custom scripts -->
+        <script src="/node_modules/startbootstrap-sb-admin-2/js/demo/datatables-demo.js"></script>
+        <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
+
+    </th:block>
+</th:block>

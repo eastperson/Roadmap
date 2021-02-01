@@ -1,4 +1,4 @@
-package com.roadmap.dto.member;
+package com.roadmap.dto.member.form;
 
 import lombok.Data;
 

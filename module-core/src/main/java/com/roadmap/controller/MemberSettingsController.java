@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roadmap.config.AppProperties;
 import com.roadmap.dto.member.*;
+import com.roadmap.dto.member.form.*;
 import com.roadmap.model.Member;
 import com.roadmap.model.Tag;
 import com.roadmap.repository.MemberRepository;
@@ -22,9 +23,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -98,7 +97,7 @@ public class MemberSettingsController {
     @GetMapping("/notifications")
     public String updateNotification(@CurrentUser Member member, Model model){
         model.addAttribute(member);
-        model.addAttribute(modelMapper.map(member,NotificationForm.class));
+        model.addAttribute(modelMapper.map(member, NotificationForm.class));
 
         return "member/settings/notifications";
     }
@@ -156,7 +155,7 @@ public class MemberSettingsController {
     @GetMapping("/location")
     public String locationView(@CurrentUser Member member, Model model){
         Member withLoc = memberRepository.findWithLocByNickname(member.getNickname());
-        if(withLoc.getLocation() != null) model.addAttribute(modelMapper.map(withLoc.getLocation(),LocationForm.class));
+        if(withLoc.getLocation() != null) model.addAttribute(modelMapper.map(withLoc.getLocation(), LocationForm.class));
         else model.addAttribute(new LocationForm());
         model.addAttribute(member);
 

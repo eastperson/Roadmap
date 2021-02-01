@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/admin/layout.html :: setContent(~{this::content})}">
+    <th:block th:fragment="content">
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">회원 관리</h1>
+        <p class="mb-4">로드맵의 회원들의 데이터를 꽌리합니다.</p>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">일반 회원</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>회원번호</th>
+                            <th>닉네임</th>
+                            <th>이메일</th>
+                            <th>직업</th>
+                            <th>가입날짜</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>회원번호</th>
+                            <th>닉네임</th>
+                            <th>이메일</th>
+                            <th>직업</th>
+                            <th>가입날짜</th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        <tr th:each="member : ${memberList}">
+                            <td><a th:href="@{/admin/member/{id}(id = ${member.id})}">[[${member.getId()}]]</a></td>
+                            <td>[[${member.getNickname()}]]</td>
+                            <td>[[${member.getEmail()}]]</td>
+                            <td>[[${member.getOccupation()}]]</td>
+                            <td class="date-weekday-time">[[${member.getJoinedAt()}]]</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        </div>
+        <div th:replace="fragments.html :: date-time"></div>
+        <!-- /.container-fluid -->
+        <!-- Custom scripts for all pages-->
+        <script src="/node_modules/startbootstrap-sb-admin-2/js/sb-admin-2.min.js"></script>
+
+        <!-- Page level plugins -->
+        <script src="/node_modules/startbootstrap-sb-admin-2/vendor/datatables/jquery.dataTables.min.js"></script>
+        <script src="/node_modules/startbootstrap-sb-admin-2/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+        <!-- Page level custom scripts -->
+        <script src="/node_modules/startbootstrap-sb-admin-2/js/demo/datatables-demo.js"></script>
+    </th:block>
+</th:block>

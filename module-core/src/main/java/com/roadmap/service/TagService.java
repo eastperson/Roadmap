@@ -1,7 +1,5 @@
 package com.roadmap.service;
 
-import com.roadmap.dto.member.TagForm;
-import com.roadmap.model.Member;
 import com.roadmap.model.Tag;
 import com.roadmap.repository.TagRepository;
 import lombok.RequiredArgsConstructor;

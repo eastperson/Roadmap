@@ -39,10 +39,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/","/login","/h2-console/**","/sign-up","/popup/jusoPopup","/sign-up","/email-login").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
         http.csrf().ignoringAntMatchers("/popup/jusoPopup","/settings/location");
         http.formLogin().loginPage("/login").permitAll();
-        http.logout().logoutSuccessUrl("/");
+        //http.logout().deleteCookies("remember-me","JSESSION_ID").logoutSuccessUrl("/");
+        http.logout().deleteCookies("JSESSION_ID").logoutSuccessUrl("/");
         http.rememberMe()
                 .tokenValiditySeconds(60*60*7)
                 .userDetailsService(accountService)
@@ -66,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .mvcMatchers("/node_modules/**")
+                .mvcMatchers("/node_modules/**","/**/*.js","/**/*.css","/images/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 }

@@ -1,7 +1,7 @@
 package com.roadmap.controller;
 
 import com.roadmap.dto.member.CurrentUser;
-import com.roadmap.dto.member.SignUpForm;
+import com.roadmap.dto.member.form.SignUpForm;
 import com.roadmap.model.Member;
 import com.roadmap.repository.MemberRepository;
 import com.roadmap.service.MemberService;

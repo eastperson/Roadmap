@@ -1,7 +1,10 @@
 package com.roadmap.member;
 
+import com.roadmap.model.Member;
+import com.roadmap.model.MemberRole;
+import com.roadmap.repository.MemberRepository;
 import com.roadmap.service.MemberService;
-import com.roadmap.dto.member.SignUpForm;
+import com.roadmap.dto.member.form.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +17,7 @@ import org.springframework.security.test.context.support.WithSecurityContextFact
 public class WithMemberSecurityContextFactory implements WithSecurityContextFactory<WithMember> {
 
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Override
     public SecurityContext createSecurityContext(WithMember withMember) {
