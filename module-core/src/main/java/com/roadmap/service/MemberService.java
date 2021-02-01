@@ -3,10 +3,7 @@ package com.roadmap.service;
 import com.roadmap.config.AppProperties;
 import com.roadmap.dto.email.EmailMessage;
 import com.roadmap.dto.member.*;
-import com.roadmap.model.Location;
-import com.roadmap.model.Member;
-import com.roadmap.model.Tag;
-import com.roadmap.model.UserMember;
+import com.roadmap.model.*;
 import com.roadmap.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -57,6 +54,7 @@ public class MemberService implements UserDetailsService {
         member.setJoinedAt(LocalDateTime.now());
         login(member);
         sendSignUpConfirmEmail(member);
+        member.addMemberRole(MemberRole.USER);
         return memberRepository.save(member);
     }
 
@@ -131,5 +129,26 @@ public class MemberService implements UserDetailsService {
         Member withLoc = memberRepository.findWithLocByNickname(member.getNickname());
         withLoc.setLocation(modelMapper.map(locationForm,Location.class));
         memberRepository.save(withLoc);
+    }
+
+    public void sendLoginLink(Member member) {
+        Context context = new Context();
+        context.setVariable("link", "/login-by-email?token=" + member.getEmailCheckToken() +
+                "&email=" + member.getEmail());
+        context.setVariable("nickname", member.getNickname());
+        context.setVariable("linkName","이메일 로그인하기");
+        context.setVariable("message","로드맵 로그인 하려면 링크를 클릭하세요.");
+        context.setVariable("host",appProperties.getHost());
+
+        String message = templateEngine.process("mail/simple-link",context);
+
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(member.getEmail())
+                .subject("로드맵, 로그인 링크")
+                .message(message)
+                .build();
+
+        //TODO emailService.sendEmail(emailMessage);
+        log.info("link : "+context.getVariable("link"));
     }
 }

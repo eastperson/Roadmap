@@ -2,6 +2,7 @@ package com.roadmap.model;
 
 import lombok.*;
 import org.apache.tomcat.jni.Local;
+import org.hibernate.annotations.Fetch;
 import org.springframework.data.util.Lazy;
 
 import javax.persistence.*;
@@ -17,7 +18,10 @@ import java.util.UUID;
 @NamedEntityGraph(name = "Member.withLoc", attributeNodes = {
         @NamedAttributeNode("location")
 })
-@Entity @ToString(exclude = {"roleSet","location"})
+@NamedEntityGraph(name = "Member.withRole", attributeNodes = {
+        @NamedAttributeNode("roleSet")
+})
+@Entity @ToString(exclude = {"roleSet","location","tags"})
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor
 public class Member extends BaseEntity{
@@ -65,7 +69,7 @@ public class Member extends BaseEntity{
     @ManyToMany
     private Set<Tag> tags = new HashSet<>();
 
-    private boolean snsLginYn;
+    private boolean fromSocial;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "loc_id")

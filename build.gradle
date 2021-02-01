@@ -99,6 +99,7 @@ subprojects {
         testImplementation group: 'com.tngtech.archunit', name: 'archunit-junit5-api', version: '0.13.1'
 
         implementation 'com.querydsl:querydsl-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     }
 
     clean {

@@ -20,4 +20,10 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     // JPA는 withTags라는 무의미한 단어이다.그래서 다른 엔티티 그래프를 사용한다.
     @EntityGraph(value = "Member.withLoc", type = EntityGraph.EntityGraphType.FETCH)
     Member findWithLocByNickname(String nickname);
+
+    @EntityGraph(value = "Member.withRole", type = EntityGraph.EntityGraphType.FETCH)
+    Member findWithRoleByEmail(String email);
+
+    @EntityGraph(value = "Member.withRole", type = EntityGraph.EntityGraphType.FETCH)
+    Member findWithRoleByNickname(String nickname);
 }

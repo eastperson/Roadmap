@@ -48,14 +48,14 @@
                     <button class="btn btn-success btn-block" type="submit"
                             aria-describedby="submitHelp">로그인</button>
                     <small id="submitHelp" class="form-text text-muted">
-                        로드가이드에 처음 오신거라면 <a href="#" th:href="@{/signup}">계정을 먼저 만드세요.</a>
+                        로드가이드에 처음 오신거라면 <a href="#" th:href="@{/sign-up}">계정을 먼저 만드세요.</a>
                     </small>
                 </div>
                 <div class="form-group d-flex justify-content-between">
-                    <button class="btn btn-outline-success btn-inline p-2 flex-fill mr-3">네이버</button>
-                    <button class="btn btn-outline-warning btn-inline p-2 flex-fill mr-3">카카오</button>
-                    <button class="btn btn-outline-danger btn-inline p-2 flex-fill mr-3">구글</button>
-                    <button class="btn btn-outline-dark btn-inline p-2 flex-fill">깃허브</button>
+                    <a href="/oauth2/authorization/naver" class="btn btn-outline-success btn-inline p-2 flex-fill mr-3">네이버</a>
+                    <a href="/oauth2/authorization/kakao" class="btn btn-outline-warning btn-inline p-2 flex-fill mr-3">카카오</a>
+                    <a href="/oauth2/authorization/google" class="btn btn-outline-danger btn-inline p-2 flex-fill mr-3">구글</a>
+                    <a href="/oauth2/authorization/github" class="btn btn-outline-dark btn-inline p-2 flex-fill">깃허브</a>
                 </div>
             </form>
         </div>

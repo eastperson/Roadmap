@@ -14,7 +14,7 @@
                 <div class="form-group">
                     <label for="nickname">닉네임</label>
                     <input id="nickname" type="text" th:field="*{nickname}" class="form-control"
-                           placeholder="whiteship" aria-describedby="nicknameHelp" required minlength="3" maxlength="20">
+                           placeholder="eastperson" aria-describedby="nicknameHelp" required minlength="3" maxlength="20">
                     <small id="nicknameHelp" class="form-text text-muted">
                         공백없이 문자와 숫자로만 3자 이상 20자 이내로 입력하세요. 가입후에 변경할 수 있습니다.
                     </small>
@@ -50,6 +50,12 @@
                     <small id="submitHelp" class="form-text text-muted">
                         <a href="#">약관</a>에 동의하시면 가입하기 버튼을 클릭하세요.
                     </small>
+                </div>
+                <div class="form-group d-flex justify-content-between">
+                    <a href="/oauth2/authorization/naver" class="btn btn-outline-success btn-inline p-2 flex-fill mr-3">네이버</a>
+                    <a href="/oauth2/authorization/kakao" class="btn btn-outline-warning btn-inline p-2 flex-fill mr-3">카카오</a>
+                    <a href="/oauth2/authorization/google" class="btn btn-outline-danger btn-inline p-2 flex-fill mr-3">구글</a>
+                    <a href="/oauth2/authorization/github" class="btn btn-outline-dark btn-inline p-2 flex-fill">깃허브</a>
                 </div>
             </form>
         </div>
