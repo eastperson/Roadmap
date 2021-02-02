@@ -42,7 +42,7 @@ public class LocationRepositoryTest {
         log.info("member : " + member);
         log.info("location : " + location);
 
-        Location findById = locationRepository.findById(1L).orElseThrow();
+        Location findById = locationRepository.findById(result.getId()).orElseThrow();
         assertNotNull(findById);
         log.info("findById location : " + findById);
         Member memberWithLoc = memberRepository.findWithLocByNickname("epepep");

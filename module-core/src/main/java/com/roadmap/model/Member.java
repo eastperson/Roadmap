@@ -71,7 +71,7 @@ public class Member extends BaseEntity{
 
     private boolean fromSocial;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "loc_id")
     private Location location;
 

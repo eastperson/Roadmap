@@ -404,4 +404,64 @@ public class MemberSettingsControllerTest {
                 .andExpect(model().attributeExists("emdNm"))
                 .andExpect(view().name("popup/jusoPop"));
     }
+
+    @DisplayName("계정 수정 화면")
+    @Test
+    @WithMember(NICKNAME)
+    public void accountView() throws Exception {
+        mockMvc.perform(get("/settings/account"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("member"))
+                .andExpect(model().attributeExists("nicknameForm"))
+                .andExpect(view().name("member/settings/account"))
+                .andExpect(authenticated());
+    }
+
+    @DisplayName("계정 수정 입력 - 입력값 에러")
+    @Test
+    @WithMember(NICKNAME)
+    public void accountSubmit_error_incorrect() throws Exception {
+        mockMvc.perform(post("/settings/account")
+                .param("nickname","d")
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("member"))
+                .andExpect(model().hasErrors())
+                .andExpect(view().name("member/settings/account"))
+                .andExpect(authenticated());
+
+    }
+
+    @DisplayName("계정 수정 입력 - 이미 존재하는 닉네임")
+    @Test
+    @WithMember(NICKNAME)
+    public void accountSubmit_error_exist() throws Exception {
+        mockMvc.perform(post("/settings/account")
+                .param("nickname",NICKNAME)
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("member"))
+                .andExpect(model().hasErrors())
+                .andExpect(view().name("member/settings/account"))
+                .andExpect(authenticated());
+    }
+
+    @DisplayName("계정 수정 입력 - 에러")
+    @Test
+    @WithMember(NICKNAME)
+    public void accountSubmit_error() throws Exception {
+        Member member = memberRepository.findByNickname(NICKNAME);
+
+        mockMvc.perform(post("/settings/account")
+                .param("nickname","eastperson")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/settings/account"))
+                .andExpect(flash().attributeExists("message"))
+                .andExpect(authenticated());
+
+        member = memberRepository.findByEmail(member.getEmail());
+
+        assertTrue(member.getNickname().equals("eastperson"));
+    }
 }

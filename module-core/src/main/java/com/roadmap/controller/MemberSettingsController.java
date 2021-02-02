@@ -11,6 +11,7 @@ import com.roadmap.repository.MemberRepository;
 import com.roadmap.repository.TagRepository;
 import com.roadmap.service.MemberService;
 import com.roadmap.service.TagService;
+import com.roadmap.validation.NicknameFormValidator;
 import com.roadmap.validation.PasswordFormVailidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -42,25 +43,30 @@ public class MemberSettingsController {
     private final TagService tagService;
     private final MemberRepository memberRepository;
     private final AppProperties appProperties;
+    private final NicknameFormValidator nicknameFormVailidator;
 
     @InitBinder("passwordForm")
     public void passwordFormBinder(WebDataBinder webDataBinder){
         webDataBinder.addValidators(passwordFormVailidator);
     }
 
+    @InitBinder("nicknameForm")
+    public void nicknameFormBinder(WebDataBinder webDataBinder){
+        webDataBinder.addValidators(nicknameFormVailidator);
+    }
+
     @GetMapping("/profile")
     public String profileView(@CurrentUser Member member, Model model){
-
-        ProfileForm profileForm = modelMapper.map(member,ProfileForm.class);
+        Member curMember = memberRepository.findByNickname(member.getNickname());
+        ProfileForm profileForm = modelMapper.map(curMember,ProfileForm.class);
         model.addAttribute(profileForm);
-        model.addAttribute(member);
+        model.addAttribute(curMember);
 
         return "member/settings/profile";
     }
 
     @PostMapping("/profile")
     public String profileView_submit(@CurrentUser Member member, Model model, @Valid ProfileForm profileForm, Errors errors, RedirectAttributes attributes){
-
         if(errors.hasErrors()){
             model.addAttribute(member);
             return "member/settings/profile";
@@ -172,6 +178,32 @@ public class MemberSettingsController {
         attributes.addFlashAttribute("message","주소 정보 변경이 완료되었습니다.");
 
         return "redirect:/settings/location";
+    }
+
+
+    @GetMapping("/account")
+    public String updateMemberView(@CurrentUser Member member, Model model){
+
+        model.addAttribute(member);
+        model.addAttribute(modelMapper.map(member,NicknameForm.class));
+
+        return "member/settings/account";
+
+    }
+
+    @PostMapping("/account")
+    public String updateMemberSubmit(@CurrentUser Member member, @Valid NicknameForm nicknameForm, Errors errors, Model model,RedirectAttributes attributes){
+        if(errors.hasErrors()){
+            model.addAttribute(member);
+            return "member/settings/account";
+        }
+
+        model.addAttribute(member);
+        memberService.updateNickname(member,nicknameForm);
+        attributes.addFlashAttribute("message", "닉네임을 수정했습니다.");
+
+        return "redirect:/settings/account";
+
     }
 
 }
