@@ -3,6 +3,9 @@
 <a href="https://aquerytool.com:443/aquerymain/index/?rurl=874a091f-7a0b-493f-a647-3f069f75ab3b">ERD(AQuery, pw : wo74y6)</a></br>
 <a href="https://ovenapp.io/view/psnRKX3ZCL4EY1t6jlvr7gcNiZzUEqjC#JG9iB">화면 정의서</a>
 
+<h2>참여 인원</h2>
+김동인(ep) - 본 프로젝트는 기획/개발/배포를 1인이 진행하는 개인 프로젝트 입니다.
+
 <h2>프로젝트 의의</h2>
 현 프로젝트는 개발자 역량 중심으로 서비스를 기획 및 출시하여 수익 창출과 신기술 경험 축적에 의미를 두고 있다. 따라서 실제 수익뿐만 아니라 의미있는 포트폴리오를 위하여 단계별 성장 전략을 거쳐 완전한 서비스로 제작하는 것이 목표이다.
 
