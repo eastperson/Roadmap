@@ -4,3 +4,5 @@
 /module-core/build/classes/java/main/
 /module-core/build/classes/java/test/
 /module-core/src/main/resources/static/node_modules/
+
+*.properties

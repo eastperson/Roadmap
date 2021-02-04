@@ -112,10 +112,6 @@ public class AdminController {
     @PostMapping("/member/{id}/modify")
     public String memberModify_submit(@Valid MemberInfoForm memberInfoForm, Errors errors, Model model,PageRequestDTO pageRequestDTO, @PathVariable Long id, RedirectAttributes attributes) throws JsonProcessingException {
         Member member = memberRepository.findById(id).orElseThrow();
-
-        log.info("member info : " + member);
-        log.info("member form : " + memberInfoForm);
-
         if(errors.hasErrors()){
             model.addAttribute(member);
             Set<Tag> tags = memberService.getTags(member);
@@ -138,10 +134,21 @@ public class AdminController {
 
 
     @GetMapping("/member_admin")
-    public String adminMemberList(Model model){
+    public String memberAdminList(Model model, Integer page,Integer size, String type, String keyword){
+        if(page == null || page <= 0) page = 1;
+        if(size == null || size <= 0) size = 10;
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder().size(size).page(page).type(type).keyword(keyword).build();
 
-        List<Member> memberList = memberRepository.findAll();
+        PageResultDTO<MemberDTO,Member> pageResultDTO = memberService.getAdminList(pageRequestDTO);
+
+        List<Member> memberList = new ArrayList<>();
+
+        for (MemberDTO memberDTO : pageResultDTO.getDtoList()) {
+            memberList.add(memberDTO.dtoToEntity(modelMapper));
+        }
         model.addAttribute("memberList",memberList);
+        model.addAttribute("pageResultDTO",pageResultDTO);
+        model.addAttribute("pageRequestDTO",pageRequestDTO);
 
         return "admin/member/list";
     }

@@ -208,4 +208,21 @@ public class MemberService implements UserDetailsService {
 
         log.info("member update : "+upMember);
     }
+
+    public PageResultDTO<MemberDTO,Member> getAdminList(PageRequestDTO requestDTO) {
+        Pageable pageable = requestDTO.getPageable(Sort.by("id").descending());
+
+        BooleanBuilder booleanBuilder = getSearch(requestDTO);
+
+        QMember qMember = QMember.member;
+
+        booleanBuilder.and(qMember.roleSet.contains(MemberRole.ADMIN));
+
+        Page<Member> result = memberRepository.findAll(booleanBuilder,pageable);
+
+        Function<Member, MemberDTO> fn = (entity->entity.entityToDto(modelMapper));
+        return new PageResultDTO<>(result,fn);
+    }
+
+
 }
