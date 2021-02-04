@@ -11,6 +11,12 @@
     <th:block th:fragment="content">
 
         <div class="container-fluid">
+            <div th:if="${message}" class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                <span th:text="${message}">완료</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <h1 class="h3 mb-2 text-gray-800">회원 정보</h1>
             <form class="card shadow mb-4" style="width: 100%;">
                 <div class="card-header py-3">
@@ -48,22 +54,22 @@
                         <input type="text" class="card-body date-weekday-time" th:value="${#temporals.format(member.getJoinedAt(), 'yyyy년 MM월 dd일')}" readonly="readonly">
                     </div>
 
-                    <div th:if="${member.getOccupation()}" class="card mb-4">
+                    <div th:if="${member.getOccupation() != '' && member.getOccupation() != null}" class="card mb-4">
                         <div class="card-header">직업</div>
                         <input type="text" class="card-body" th:value="${member.getOccupation()}" readonly="readonly">
                     </div>
 
-                    <div th:if="${member.getBio()}" class="card mb-4">
+                    <div th:if="${member.getBio() != '' && member.getBio() != null}" class="card mb-4">
                         <div class="card-header">자기소개</div>
                         <input type="text" class="card-body" th:value="${member.getBio()}" readonly="readonly">
                     </div>
 
-                    <div th:if="${member.getUrl()}" class="card mb-4">
+                    <div th:if="${member.getUrl() != '' && member.getUrl() != null}" class="card mb-4">
                         <div class="card-header">홈페이지</div>
                         <input type="text" class="card-body" th:value="${member.getUrl()}" readonly="readonly">
                     </div>
 
-                    <div th:if="${member.getTags()}" class="row">
+                    <div th:if="${member.getTags() != '' && member.getTags() != null}" class="row">
                         <h2 class="col-12">관심있는 스터디 주제</h2>
                     </div>
                     <div class="row mb-7">
@@ -74,9 +80,8 @@
                         </div>
                     </div>
 
-
-                    <button data-oper="modify" class="btn btn-secondary">수정하기</button>
-                    <button th:href="@{/admin/member}" data-oper="list" class="btn btn-secondary">목록으로</button><br>
+                    <a th:href="@{'/admin/member/'+${id}+'/modify'(page = ${pageRequestDTO.getPage()},size=${pageRequestDTO.getSize()},keyword=${pageRequestDTO.getKeyword()})}" data-oper="modify" class="btn btn-secondary">수정하기</a>
+                    <a th:href="@{/admin/member(page = ${pageRequestDTO.getPage()},size=${pageRequestDTO.getSize()},keyword=${pageRequestDTO.getKeyword()})}" data-oper="list" class="btn btn-secondary">목록으로</a>
                 </div>
             </form>
         </div>

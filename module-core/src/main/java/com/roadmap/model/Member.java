@@ -1,8 +1,11 @@
 package com.roadmap.model;
 
+import com.roadmap.dto.member.MemberDTO;
 import lombok.*;
 import org.apache.tomcat.jni.Local;
 import org.hibernate.annotations.Fetch;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Lazy;
 
 import javax.persistence.*;
@@ -100,5 +103,9 @@ public class Member extends BaseEntity{
 
     public boolean canSendConfirmEmail() {
         return this.getEmailCheckTokenGeneratedAt().isBefore(LocalDateTime.now().minusHours(1));
+    }
+
+    public MemberDTO entityToDto(ModelMapper modelMapper) {
+        return modelMapper.map(this,MemberDTO.class);
     }
 }

@@ -1,13 +1,22 @@
 package com.roadmap.service;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.roadmap.config.AppProperties;
+import com.roadmap.dto.admin.member.MemberInfoForm;
 import com.roadmap.dto.email.EmailMessage;
+import com.roadmap.dto.member.MemberDTO;
 import com.roadmap.dto.member.form.*;
+import com.roadmap.dto.page.PageRequestDTO;
+import com.roadmap.dto.page.PageResultDTO;
 import com.roadmap.model.*;
 import com.roadmap.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,11 +28,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -155,5 +164,48 @@ public class MemberService implements UserDetailsService {
     public void updateNickname(Member member,NicknameForm nicknameForm) {
         modelMapper.map(nicknameForm,member);
         memberRepository.save(member);
+    }
+
+    public PageResultDTO<MemberDTO,Member> getList(PageRequestDTO requestDTO) {
+        Pageable pageable = requestDTO.getPageable(Sort.by("id").descending());
+
+        BooleanBuilder booleanBuilder = getSearch(requestDTO);
+
+        Page<Member> result = memberRepository.findAll(booleanBuilder,pageable);
+
+        Function<Member, MemberDTO> fn = (entity->entity.entityToDto(modelMapper));
+        return new PageResultDTO<>(result,fn);
+    }
+
+    private BooleanBuilder getSearch(PageRequestDTO requestDTO) {
+        String type = requestDTO.getType();
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+        QMember qMember = QMember.member;
+        String keyword = requestDTO.getKeyword();
+        BooleanExpression expression = qMember.id.gt(0L);
+
+        booleanBuilder.and(expression);
+//        if(type == null || type.trim().length() == 0) return booleanBuilder;
+
+        if(keyword == null || keyword.trim().length() == 0) return booleanBuilder;
+
+        BooleanBuilder conditionBuilder = new BooleanBuilder();
+
+        conditionBuilder.or(qMember.email.contains(keyword));
+
+        conditionBuilder.or(qMember.nickname.contains(keyword));
+
+        conditionBuilder.or(qMember.occupation.contains(keyword));
+
+        booleanBuilder.and(conditionBuilder);
+
+        return booleanBuilder;
+    }
+
+    public void updateInfo(MemberInfoForm memberInfoForm,Member member) {
+        modelMapper.map(memberInfoForm,member);
+        Member upMember = memberRepository.save(member);
+
+        log.info("member update : "+upMember);
     }
 }

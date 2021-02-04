@@ -3,10 +3,11 @@ package com.roadmap.repository;
 import com.roadmap.model.Member;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
-public interface MemberRepository extends JpaRepository<Member,Long> {
+public interface MemberRepository extends JpaRepository<Member,Long>, QuerydslPredicateExecutor<Member> {
     boolean existsByEmail(String email);
 
     boolean existsByNickname(String nickname);

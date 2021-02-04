@@ -1,6 +1,8 @@
 package com.roadmap.admin;
 
+import com.roadmap.dto.member.form.SignUpForm;
 import com.roadmap.member.WithMember;
+import com.roadmap.member.WithMemberSecurityContextFactory;
 import com.roadmap.model.Member;
 import com.roadmap.model.MemberRole;
 import com.roadmap.repository.MemberRepository;
@@ -10,16 +12,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.time.LocalDateTime;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @Transactional
@@ -29,6 +34,7 @@ public class AdminControllerTest {
     @Autowired private MockMvc mockMvc;
     @Autowired private MemberRepository memberRepository;
     @Autowired private MemberService memberService;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     private final static String NICKNAME = "epepep";
 
@@ -48,10 +54,37 @@ public class AdminControllerTest {
     @WithMember(NICKNAME)
     @Transactional
     void admin_memberListView() throws Exception {
-        mockMvc.perform(get("/admin/member").with(user("epepep").roles("ADMIN")))
+        mockMvc.perform(get("/admin/member").with(user("epepep").roles("ADMIN"))
+                .param("page","1"))
                 .andExpect(model().attributeExists("memberList"))
                 .andExpect(view().name("admin/member/list"))
-                .andExpect(authenticated());
+                .andExpect(authenticated())
+                .andDo(print());
+    }
+
+    @DisplayName("어드민 회원 관리 리스트 화면 페이징")
+    @Test
+    @WithMember(NICKNAME)
+    @Transactional
+    void admin_memberListView_Paging() throws Exception {
+
+        for(int i = 0; i < 20; i++) {
+            SignUpForm signUpForm = new SignUpForm();
+                    signUpForm.setNickname("nickname" + i);
+                    signUpForm.setEmail(i+"@email.com");
+                    signUpForm.setPassword(passwordEncoder.encode("11111111"));
+            memberService.saveNewMember(signUpForm);
+        }
+
+
+        mockMvc.perform(get("/admin/member").with(user("epepep").roles("ADMIN"))
+                .param("page","0"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("memberList"))
+                .andExpect(model().attributeExists("pageResultDTO"))
+                .andExpect(view().name("admin/member/list"))
+                .andExpect(authenticated())
+                .andDo(print());
     }
 
     @DisplayName("어드민 회원 관리 정보 화면")

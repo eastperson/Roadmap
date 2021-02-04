@@ -34,10 +34,10 @@ public class MemberControllerTest {
     @Autowired private MemberRepository memberRepository;
     @Autowired private MemberService memberService;
 
-    @AfterEach
-    void afterEach() {
-        memberRepository.deleteAll();
-    }
+//    @AfterEach
+//    void afterEach() {
+//        memberRepository.deleteAll();
+//    }
 
     @DisplayName("회원 가입 폼 화면")
     @Test
