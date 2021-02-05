@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity @ToString
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor
-public class Location {
+public class Location extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "loc_id")

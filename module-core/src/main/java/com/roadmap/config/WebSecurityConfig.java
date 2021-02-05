@@ -68,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .mvcMatchers("/node_modules/**","/**/*.js","/**/*.css","/images/**")
+                .antMatchers("/node_modules/**","/**/*.js","/**/*.css","/images/**","/static/js/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 }

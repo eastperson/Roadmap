@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
@@ -24,16 +25,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Log4j2
 @AutoConfigureMockMvc
+@Transactional
 public class SecurityTest {
 
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private MockMvc mockMvc;
     @Autowired private MemberRepository memberRepository;
 
-    @AfterEach
-    void afterEach() {
-        memberRepository.deleteAll();
-    }
+//    @AfterEach
+//    void afterEach() {
+//        memberRepository.deleteAll();
+//    }
 
     @DisplayName("패스워드 인코딩 테스트")
     @Test

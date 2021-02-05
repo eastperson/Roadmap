@@ -29,4 +29,7 @@ public interface MemberRepository extends JpaRepository<Member,Long>, QuerydslPr
 
     @EntityGraph(value = "Member.withRole", type = EntityGraph.EntityGraphType.FETCH)
     Member findWithRoleByNickname(String nickname);
+
+    @EntityGraph(value = "Member.withRoadmap", type = EntityGraph.EntityGraphType.FETCH)
+    Member findWithRoadmapByNickname(String nickname);
 }

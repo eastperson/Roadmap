@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor
-public class Tag {
+public class Tag extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

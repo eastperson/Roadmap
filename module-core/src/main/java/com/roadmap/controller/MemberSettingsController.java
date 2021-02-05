@@ -11,6 +11,7 @@ import com.roadmap.repository.MemberRepository;
 import com.roadmap.repository.TagRepository;
 import com.roadmap.service.MemberService;
 import com.roadmap.service.TagService;
+
 import com.roadmap.validation.NicknameFormValidator;
 import com.roadmap.validation.PasswordFormVailidator;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/settings")
 public class MemberSettingsController {
 
+    private final NicknameFormValidator nicknameFormVailidator;
     private final ModelMapper modelMapper;
     private final MemberService memberService;
     private final PasswordFormVailidator passwordFormVailidator;
@@ -43,7 +45,6 @@ public class MemberSettingsController {
     private final TagService tagService;
     private final MemberRepository memberRepository;
     private final AppProperties appProperties;
-    private final NicknameFormValidator nicknameFormVailidator;
 
     @InitBinder("passwordForm")
     public void passwordFormBinder(WebDataBinder webDataBinder){

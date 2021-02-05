@@ -10,9 +10,7 @@ import org.springframework.data.util.Lazy;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @NamedEntityGraph(name = "Member.withAll", attributeNodes = {
         @NamedAttributeNode("location"),
@@ -24,7 +22,10 @@ import java.util.UUID;
 @NamedEntityGraph(name = "Member.withRole", attributeNodes = {
         @NamedAttributeNode("roleSet")
 })
-@Entity @ToString(exclude = {"roleSet","location","tags"})
+@NamedEntityGraph(name = "Member.withRoadmap", attributeNodes = {
+        @NamedAttributeNode("roadmaps")
+})
+@Entity @ToString(exclude = {"roleSet","location","tags","likeRoadmaps","roadmaps"})
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor
 public class Member extends BaseEntity{
@@ -69,8 +70,11 @@ public class Member extends BaseEntity{
 
     private boolean roadmapUpdatedByWeb = true;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Tag> tags = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<Roadmap> likeRoadmaps;
 
     private boolean fromSocial;
 
@@ -82,6 +86,9 @@ public class Member extends BaseEntity{
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Set<MemberRole> roleSet = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "members")
+    private List<Roadmap> roadmaps = new ArrayList<>();
 
     public void addMemberRole(MemberRole memberRole){
         roleSet.add(memberRole);

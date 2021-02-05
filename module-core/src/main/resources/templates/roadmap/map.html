@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+<script th:src="@{/js/arbor.js}"></script>
+<script th:src="@{/js/arbor-tween.js}"></script>
+<div th:replace="fragments.html :: main-nav"></div>
+<div th:replace="fragments.html :: roadmap-banner"></div>
+
+<div class="container">
+    <div th:replace="fragments.html :: roadmap-info"></div>
+    <div th:replace="fragments.html :: roadmap-menu(roadmapMenu='map')"></div>
+
+    <canvas id="viewport" width="1920" height="1080"></canvas>
+
+    <div th:replace="fragments.html :: footer"></div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        let list = [[${roadmap.getStageList()}]];
+        /*]]>*/
+    </script>
+    <div th:replace="fragments.html :: arbor(roadmap = ${roadmap})"></div>
+</div>
+<script type="application/javascript">
+    $(function (){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+</body>
+</html>

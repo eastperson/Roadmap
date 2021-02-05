@@ -105,7 +105,7 @@ public class MemberController {
 
     @GetMapping("/profile/{nickname}")
     public String profileView(@PathVariable String nickname, Model model, @CurrentUser Member curMember){
-        Member member = memberRepository.findByNickname(nickname);
+        Member member = memberRepository.findWithRoadmapByNickname(nickname);
         if(member == null) {
             model.addAttribute("error","member.error");
             return "member/profile";

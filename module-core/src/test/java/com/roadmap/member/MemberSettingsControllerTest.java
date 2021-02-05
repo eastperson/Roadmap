@@ -449,11 +449,12 @@ public class MemberSettingsControllerTest {
     @DisplayName("계정 수정 입력 - 에러")
     @Test
     @WithMember(NICKNAME)
+    @Transactional
     public void accountSubmit_error() throws Exception {
         Member member = memberRepository.findByNickname(NICKNAME);
 
         mockMvc.perform(post("/settings/account")
-                .param("nickname","eastperson")
+                .param("nickname","eastperson321")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/settings/account"))
@@ -462,6 +463,6 @@ public class MemberSettingsControllerTest {
 
         member = memberRepository.findByEmail(member.getEmail());
 
-        assertTrue(member.getNickname().equals("eastperson"));
+        assertTrue(member.getNickname().equals("eastperson321"));
     }
 }
