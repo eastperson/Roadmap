@@ -22,3 +22,7 @@
 ![스케쥴러](https://user-images.githubusercontent.com/66561524/106287642-5cfc9c80-628a-11eb-9e53-d84f435ea406.jpg)
 
 <a href="https://docs.google.com/spreadsheets/d/18YoOEwdi9D2XqdyRKNc9kOoKK-YFZt9xhP3aKwqv1ak/edit?usp=sharing">스케쥴</a>
+
+<h2>로드맵 이미지</h2>
+
+![Node](https://user-images.githubusercontent.com/66561524/107146863-109e1480-698e-11eb-8903-e77da6bb6a9b.png)
