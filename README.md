@@ -15,7 +15,7 @@
 
 <h2>개발 환경</h2>
 
-![개발환경](https://user-images.githubusercontent.com/66561524/106464674-4e0d2880-64dc-11eb-99bc-e3c98989c0b4.PNG)
+![개발환경_v2](https://user-images.githubusercontent.com/66561524/107146813-cb79e280-698d-11eb-9c43-74223dd05327.PNG)
 
 <h2>스케쥴러</h2>
 
