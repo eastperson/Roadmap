@@ -73,13 +73,15 @@
                         <a class="btn btn-outline-primary" href="#" th:href="@{/settings/profile}">프로필 수정</a>
                     </div>
                 </div>
-                <div th:if="${member.getRoadmaps() != null}" th:each="roadmap : ${member.getRoadmaps()}" class="tab-pane fade" id="v-pills-study" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                    <div class="card">
-                        <h5 class="card-header" th:text="${roadmap.getTitle()}">Featured</h5>
-                        <div class="card-body">
-                            <h5 class="card-title" th:text="${'제작자 : ' + roadmap.getOwner().getNickname()}">Special title treatment</h5>
-                            <p class="card-text" th:text="${roadmap.getShortDescription()}">With supporting text below as a natural lead-in to additional content.</p>
-                            <a th:href="@{'/roadmap/' + ${roadmap.getEncodedPath()}}" class="btn btn-primary">로드맵 확인하기</a>
+                <div id="v-pills-study" class="tab-pane fade" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <div th:if="${member.roadmaps != null}" class="mt-5" th:each="roadmap : ${member.roadmaps}">
+                        <div class="card">
+                            <h5 class="card-header" th:text="${roadmap.getTitle()}">Featured</h5>
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${'제작자 : ' + roadmap.getOwner().getNickname()}">Special title treatment</h5>
+                                <p class="card-text" th:text="${roadmap.getShortDescription()}">With supporting text below as a natural lead-in to additional content.</p>
+                                <a th:href="@{'/roadmap/' + ${roadmap.getEncodedPath()}}" class="btn btn-primary">로드맵 확인하기</a>
+                            </div>
                         </div>
                     </div>
                 </div>

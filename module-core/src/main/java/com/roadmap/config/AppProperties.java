@@ -13,6 +13,7 @@ public class AppProperties {
     private String kakaoJsKey;
     private String kakaoRestKey;
     private String jusoConfirmKey;
+    private String roadmapApiKey;
 
 }
 

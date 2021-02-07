@@ -1,6 +1,10 @@
 package com.roadmap.config;
 
+import com.roadmap.filter.ApiCheckFilter;
+import com.roadmap.filter.ApiLoginFilter;
+import com.roadmap.handler.ApiLoginFailHandler;
 import com.roadmap.handler.LoginSuccessHandler;
+import com.roadmap.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -16,6 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -37,11 +42,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/","/login","/h2-console/**","/sign-up","/popup/jusoPopup","/sign-up","/email-login").permitAll()
+                .antMatchers("/","/login","/h2-console/**","/sign-up","/popup/jusoPopup","/sign-up","/email-login","/roadmap/api/**").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
-        http.csrf().ignoringAntMatchers("/popup/jusoPopup","/settings/location");
+        http.csrf().ignoringAntMatchers("/popup/jusoPopup","/settings/location","/roadmap/api/**");
         http.formLogin().loginPage("/login").permitAll();
         //http.logout().deleteCookies("remember-me","JSESSION_ID").logoutSuccessUrl("/");
         http.logout().deleteCookies("JSESSION_ID").logoutSuccessUrl("/");
@@ -50,6 +55,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(accountService)
                 .tokenRepository(tokenRepository());
         http.oauth2Login().loginPage("/login").successHandler(successHandler());
+
+
+        http.addFilterBefore(apiCheckFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(apiLoginFilter(),UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Bean
@@ -63,6 +73,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
         jdbcTokenRepository.setDataSource(dataSource);
         return jdbcTokenRepository;
+    }
+
+    @Bean
+    public ApiLoginFilter apiLoginFilter() throws Exception{
+        ApiLoginFilter apiLoginFilter = new ApiLoginFilter("/api/login",jwtUtil());
+        apiLoginFilter.setAuthenticationManager(authenticationManager());
+        apiLoginFilter.setAuthenticationFailureHandler(new ApiLoginFailHandler());
+        return apiLoginFilter;
+
+    }
+
+    @Bean
+    public JWTUtil jwtUtil(){
+        return new JWTUtil();
+    }
+
+    @Bean
+    public ApiCheckFilter apiCheckFilter() {
+        return new ApiCheckFilter("/roadmap/api/**/*",jwtUtil());
     }
 
     @Override

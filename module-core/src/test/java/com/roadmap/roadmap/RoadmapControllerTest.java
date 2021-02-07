@@ -1,5 +1,6 @@
 package com.roadmap.roadmap;
 
+import com.roadmap.config.AppProperties;
 import com.roadmap.dto.roadmap.form.RoadmapForm;
 import com.roadmap.member.WithMember;
 import com.roadmap.model.Member;
@@ -38,6 +39,7 @@ public class RoadmapControllerTest {
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private RoadmapRepository roadmapRepository;
     @Autowired private RoadmapService roadmapService;
+    @Autowired private AppProperties appProperties;
 
     private final static String NICKNAME = "epepep";
 
@@ -189,6 +191,8 @@ public class RoadmapControllerTest {
 
         mockMvc.perform(get("/roadmap/" + roadmap.getEncodedPath() + "/map"))
                 .andExpect(model().attributeExists("roadmap"))
+                .andExpect(model().attributeExists("host"))
+                .andExpect(model().attributeExists("roadmapAppKey"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("roadmap/map"))
                 .andExpect(authenticated());
@@ -247,6 +251,17 @@ public class RoadmapControllerTest {
 
         Roadmap updateRoadmap = roadmapRepository.findByPath("testpath");
         assertFalse(updateRoadmap.getMembers().contains(member));
+
+    }
+
+    @DisplayName("appProperties key 확인")
+    @Test
+    void appProperties() throws Exception {
+        System.out.println("host : "+appProperties.getHost());
+        System.out.println("juso confirm key : "+appProperties.getJusoConfirmKey());
+        System.out.println("kakao rest key : "+appProperties.getKakaoRestKey());
+        System.out.println("kakao js key : "+appProperties.getKakaoJsKey());
+        System.out.println("roadmap api key : "+appProperties.getRoadmapApiKey());
 
     }
 

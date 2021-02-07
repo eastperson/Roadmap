@@ -2,15 +2,20 @@ package com.roadmap.service;
 
 import com.roadmap.dto.roadmap.form.RoadmapDescriptionForm;
 import com.roadmap.dto.roadmap.form.RoadmapForm;
+import com.roadmap.dto.roadmap.form.StageForm;
 import com.roadmap.model.Member;
 import com.roadmap.model.Roadmap;
+import com.roadmap.model.Stage;
 import com.roadmap.repository.MemberRepository;
 import com.roadmap.repository.RoadmapRepository;
+import com.roadmap.repository.StageRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ public class RoadmapService {
     private final RoadmapRepository roadmapRepository;
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
+    private final StageRepository stageRepository;
 
 
     public Roadmap registerForm(Member member, RoadmapForm roadmapForm) {
@@ -64,5 +70,27 @@ public class RoadmapService {
 
     public void updateRoadmapDescription(Roadmap roadmap, RoadmapDescriptionForm roadmapDescriptionForm) {
         modelMapper.map(roadmapDescriptionForm,roadmap);
+    }
+
+    public Stage addNewStage(Roadmap roadmap, Stage stage) {
+        stage.setRoadmap(roadmap);
+        int size = roadmap.getStageList().size();
+        stage.setOrd(size + 1);
+        if(size == 0) stage.setHead(true);
+        roadmap.initTail();
+        stage.setTail(true);
+        Stage newStage = stageRepository.save(stage);
+
+        roadmap.getStageList().add(newStage);
+        return newStage;
+    }
+
+    public void removeStage(Roadmap roadmap, Long id) {
+        Optional<Stage> result = stageRepository.findById(id);
+        if(result.isPresent()){
+            Stage stage = result.get();
+            roadmap.getStageList().remove(stage);
+            stageRepository.delete(stage);
+        }
     }
 }

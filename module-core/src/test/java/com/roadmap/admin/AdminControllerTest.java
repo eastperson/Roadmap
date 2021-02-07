@@ -182,5 +182,4 @@ public class AdminControllerTest {
         assertTrue(updateMember.getUrl().equals("홈페이지"));
         assertTrue(updateMember.getOccupation().equals("직업"));
     }
-
 }

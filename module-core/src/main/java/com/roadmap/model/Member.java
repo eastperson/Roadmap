@@ -1,5 +1,8 @@
 package com.roadmap.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.roadmap.dto.member.MemberDTO;
 import lombok.*;
 import org.apache.tomcat.jni.Local;
@@ -25,9 +28,10 @@ import java.util.*;
 @NamedEntityGraph(name = "Member.withRoadmap", attributeNodes = {
         @NamedAttributeNode("roadmaps")
 })
-@Entity @ToString(exclude = {"roleSet","location","tags","likeRoadmaps","roadmaps"})
+@Entity @ToString(exclude = {"roleSet","location","tags","likeRoadmaps","roadmaps","profileImage"})
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Member extends BaseEntity{
 
     @Id @GeneratedValue

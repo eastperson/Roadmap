@@ -111,6 +111,8 @@ public class MemberController {
             return "member/profile";
         }
 
+        log.info("roadmaps : "+member.getRoadmaps());
+
         model.addAttribute("isOwner",member.equals(curMember));
         model.addAttribute(member);
         return "member/profile";

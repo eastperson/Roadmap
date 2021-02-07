@@ -1,5 +1,7 @@
 package com.roadmap.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.roadmap.dto.member.AuthMemberDTO;
 import lombok.*;
 import org.apache.tomcat.jni.User;
@@ -20,9 +22,10 @@ import java.util.*;
         @NamedAttributeNode("stageList"),
         @NamedAttributeNode("likeMembers")
 })
-@Entity @ToString(exclude = {"members","tags","likeMembers","stageList"})
+@Entity @ToString(exclude = {"members","tags","likeMembers","stageList","owner"})
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Roadmap extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -152,4 +155,7 @@ public class Roadmap extends BaseEntity{
         this.getMembers().remove(member);
     }
 
+    public void initTail() {
+        this.getStageList().stream().forEach(stage -> stage.setTail(false));
+    }
 }
