@@ -15,10 +15,14 @@
 
 <h2>개발 환경</h2>
 
-![개발환경](https://user-images.githubusercontent.com/66561524/106464674-4e0d2880-64dc-11eb-99bc-e3c98989c0b4.PNG)
+![개발환경_v2](https://user-images.githubusercontent.com/66561524/107146813-cb79e280-698d-11eb-9c43-74223dd05327.PNG)
 
 <h2>스케쥴러</h2>
 
 ![스케쥴러](https://user-images.githubusercontent.com/66561524/106287642-5cfc9c80-628a-11eb-9e53-d84f435ea406.jpg)
 
 <a href="https://docs.google.com/spreadsheets/d/18YoOEwdi9D2XqdyRKNc9kOoKK-YFZt9xhP3aKwqv1ak/edit?usp=sharing">스케쥴</a>
+
+<h2>로드맵 이미지</h2>
+
+![Node](https://user-images.githubusercontent.com/66561524/107146863-109e1480-698e-11eb-8903-e77da6bb6a9b.png)
