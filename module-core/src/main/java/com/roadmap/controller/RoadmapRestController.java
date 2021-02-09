@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -44,10 +45,6 @@ public class RoadmapRestController {
 
     @PostMapping("/stage/new")
     public ResponseEntity<StageDTO> registerStage(@RequestBody @Valid StageForm stageForm, Errors errors, @PathVariable String path) throws JsonProcessingException {
-
-        log.info("------------------register new stage---------------------");
-        log.info(stageForm);
-
         if(errors.hasErrors()) {
             return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
         }
@@ -59,16 +56,17 @@ public class RoadmapRestController {
         return new ResponseEntity<>(modelMapper.map(newStage, StageDTO.class), HttpStatus.OK);
     }
 
-    @PostMapping("/stage/remove")
+    @DeleteMapping("/stage/remove")
     public ResponseEntity<String> removeStage(@PathVariable String path, Long id) {
-
-        log.info("------------------remove stage---------------------");
 
         Roadmap roadmap = roadmapRepository.findByPath(path);
 
+        if(id == null) return new ResponseEntity<>("not found id", HttpStatus.BAD_REQUEST);;
+        if(roadmap == null) return new ResponseEntity<>("not found stage", HttpStatus.BAD_REQUEST);
+
         roadmapService.removeStage(roadmap,id);
 
-        return new ResponseEntity<>("removed successful", HttpStatus.OK);
+        return new ResponseEntity<>("remove stage successful", HttpStatus.OK);
     }
 
     @GetMapping("/stage/get/{ord}")
@@ -101,6 +99,10 @@ public class RoadmapRestController {
         if(errors.hasErrors()) {
             return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
         }
+
+        if(id == null)
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+
         Node node = null;
         NodeDTO nodeDTO = new NodeDTO();
 
@@ -119,5 +121,44 @@ public class RoadmapRestController {
         nodeDTO.setTitle(node.getTitle());
 
         return new ResponseEntity<>(nodeDTO, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/node/remove")
+    public ResponseEntity<String> removeNode(Long id){
+
+        if(id == null)
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+
+        Optional<Node> result = nodeRepository.findById(id);
+
+        if(!result.isPresent())
+            return new ResponseEntity<>("not find node fail",HttpStatus.BAD_REQUEST);
+
+        Node node = result.get();
+
+        if(node.getChilds().size() > 0){
+            return new ResponseEntity<>("not empty fail",HttpStatus.BAD_REQUEST);
+        }
+
+        nodeService.removeNode(node);
+
+        return new ResponseEntity<>("remove node successful", HttpStatus.OK);
+    }
+
+    @PutMapping("/node/modify")
+    public ResponseEntity<NodeDTO> modifyTypeNode(Long id,String type){
+
+        if(id == null || type == null)
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        if(!type.equalsIgnoreCase("post") && !type.equalsIgnoreCase("text")
+                && !type.equalsIgnoreCase("video"))
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+
+
+        Node node = nodeRepository.findById(id).orElseThrow();
+
+        Node updateNode = nodeService.modifyTypeNode(node,type);
+
+        return new ResponseEntity<>(modelMapper.map(updateNode,NodeDTO.class), HttpStatus.OK);
     }
 }

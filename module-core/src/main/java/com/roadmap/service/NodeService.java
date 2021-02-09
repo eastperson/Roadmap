@@ -2,6 +2,8 @@ package com.roadmap.service;
 
 import com.roadmap.dto.roadmap.form.NodeForm;
 import com.roadmap.model.Node;
+import com.roadmap.model.NodeType;
+import com.roadmap.model.Roadmap;
 import com.roadmap.model.Stage;
 import com.roadmap.repository.NodeRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,4 +37,25 @@ public class NodeService {
         return nodeRepository.save(newNode);
     }
 
+    public void removeNode(Node node) {
+
+        if(node.getStage() != null){
+            node.getStage().getNodeList().remove(node);
+        }
+
+        if(node.getParent() != null) {
+            node.getParent().getChilds().remove(node);
+        }
+
+        nodeRepository.delete(node);
+    }
+
+    public Node modifyTypeNode(Node node,String type) {
+        String nodeType = null;
+        if(type.equalsIgnoreCase("text")) nodeType = NodeType.TEXT.toString();
+        if(type.equalsIgnoreCase("post"))  nodeType = NodeType.POST.toString();
+        if(type.equalsIgnoreCase("video"))  nodeType = NodeType.VIDEO.toString();
+        node.setNodeType(nodeType);
+        return nodeRepository.save(node);
+    }
 }

@@ -87,7 +87,7 @@ public class RoadmapController {
         return "roadmap/member";
     }
 
-    @GetMapping("/roadmap/{path}/map")
+    @GetMapping({"/roadmap/{path}/map"})
     public String viewMap(@CurrentUser Member member, @PathVariable String path, Model model) throws JsonProcessingException {
         Roadmap roadmap = roadmapRepository.findWithAllByPath(path);
         model.addAttribute(roadmap);
@@ -118,6 +118,29 @@ public class RoadmapController {
             });
         }
         return;
+    }
+
+    @GetMapping({"/roadmap/{path}/setmap"})
+    public String viewSetMap(@CurrentUser Member member, @PathVariable String path, Model model) throws JsonProcessingException {
+        Roadmap roadmap = roadmapRepository.findWithAllByPath(path);
+        model.addAttribute(roadmap);
+        // TODO Quertdsl로 튜닝 필요
+        roadmap.getStageList().stream().sorted((s1,s2) -> (int) (s2.getOrd() - s1.getOrd()))
+                .collect(Collectors.toList())
+                .forEach(stage ->{
+                    stage.setRoadmap(null);
+                    stage.getNodeList().stream().forEach(node -> {
+                        node.setStage(null);
+                        node.setParent(null);
+                        recursionNode(node);
+                    });
+                });
+
+        model.addAttribute("stageList",objectMapper.writeValueAsString(roadmap.getStageList()));
+        model.addAttribute("roadmapAppKey", appProperties.getRoadmapApiKey());
+        model.addAttribute("host",appProperties.getHost());
+
+        return "roadmap/setmap";
     }
 
     @GetMapping("/roadmap/{path}/join")

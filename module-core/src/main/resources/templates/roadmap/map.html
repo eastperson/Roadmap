@@ -1,8 +1,129 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments.html :: head"></head>
+<head>
+    <style>
+        /*  The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.219); /* Black w/ opacity */
+            animation: fadeEffect 0.8s;
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: 10% auto; /* 15% from the top and centered */
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-self: start;
+            border-radius: 3px;
+            box-shadow: 3px 3px 7px rgba(44, 36, 36, 0.342);
+            width: 40%; /* Could be more or less, depending on screen size */
+            height: auto;
+            animation: fadeEffect 0.3s;
+            overflow: hidden;
+        }
+        .modal_header{
+            padding: 0 0;
+            width: 100%;
+            padding: 20px;
+            padding-bottom: 25px;
+            /*border: 1px black solid;*/
+            background-color: #d32323;
+            border-radius: 3px 3px 0 0;
+        }
+        .modal_wrapper_regwait{
+            margin: 10px;
+            padding: 0 25px 50px 25px;
+            /*display: flex;*/
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            display:none;
+        }
+        .modal_tit{
+            /*border: 1px black solid;*/
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            width: 100%;
+            height: 50px;
+            color: #d32323;
+            /*text-shadow: 1px 1px 6px rgba(44, 36, 36, 0.171);*/
+        }
+        .modal_top{
+            width: 100%;
+            height: 250px;
+            /*border: 1px black solid;*/
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal_bot{
+            width: 100%;
+            height: 100px;
+            /*border: 1px black solid;*/
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal_bot > div{
+            font-weight: bold;
+            font-size: 18px;
+            margin: 5px 0;
+        }
+        .modal-content ul{
+            margin : 0 0;
+            display : flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+        }
+        .modal-content ul li {
+            width:100px;
+            height:100px;
+        }
+
+        /* The Close Button */
+        .close_modal {
+            position : absolute;
+            right : 20px;
+            top : 10px;
+            display : inline-block;
+            margin : 0 0;
+            color: white;
+            font-size: 24px;
+
+        }
+
+        .close_modal:hover,
+        .close_modal:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
 <body class="bg-light">
 <script th:src="@{/js/arbor.js}"></script>
 <script th:src="@{/js/arbor-tween.js}"></script>
@@ -15,16 +136,78 @@
 
     <canvas id="viewport" width="1920" height="1080"></canvas>
 
+    <!-- The Modal -->
+    <div id="nodeModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close_modal"><i class="fas fa-times"></i></span>
+            <div class="modal_header">
+                <span id="node-title"></span>
+                <span id="short-description"></span>
+            </div>
+        </div>
+    </div>
+
     <div th:replace="fragments.html :: footer"></div>
+    <div th:replace="fragments.html :: modal"></div>
+    <script>
+
+        const modal = $("#nodeModal"),
+            close = $(".close_modal");
+
+        close.on("click", (e) => {
+            modal.css("display","none");
+        });
+
+        window.onclick = function(e) {
+            if (e.target === document.getElementById('nodeModal')) {
+                modal.css("display","none");
+            }
+        }
+
+        // esc 눌러서 모달 escape
+        $(document).keyup(function(e) {
+            if(e.key === "Escape"){
+                modal.css("display","none");
+            }
+        });
+
+        $(".alert_closebtn").on("click", e => {
+            $(e.target).parent().addClass("hide");
+            $(e.target).parent().removeClass("show");
+            //setTimeout($(e.target).parent().removeClass("showAlert"),5000);
+        });
+
+    </script>
     <script th:inline="javascript">
         let roadmapAppKey = [[${roadmapAppKey}]];
         let host = [[${host}]];
         let stageListStr = [[${stageList}]];
         let stageList = JSON.parse(stageListStr);
+        let move = function (){
+            console.log('move....................');
+            location.href = '/';
+        }
+
     </script>
     <script>
 
         (function ($) {
+
+            let nodeModal = document.getElementById('nodeModal');
+            let showModal = function (str) {
+
+                nodeModal.classList.remove('hide');
+                nodeModal.classList.add('show');
+                nodeModal.style.display = 'block';
+
+                let modalTitle = nodeModal.querySelector('#node-title');
+                let modalBodyInput = nodeModal.querySelector('#short-description');
+
+                modalTitle.textContent = str + ' 노드 만들기';
+                modalBodyInput.textContent = str + '의 짧은 소개';
+            };
+
             var Renderer = function (canvas) {
                 var canvas = $(canvas).get(0);
                 var ctx = canvas.getContext("2d");
@@ -63,12 +246,17 @@
                             clicked: function (e) {
                                 var pos = $(canvas).offset();
                                 _mouseP = arbor.Point(e.pageX - pos.left, e.pageY - pos.top);
-                                dragged = particleSystem.nearest(_mouseP);
+                                selected = nearest = dragged = particleSystem.nearest(_mouseP);
                                 if (dragged && dragged.node !== null) {
                                     dragged.node.fixed = true;
                                 }
                                 $(canvas).bind('mousemove', handler.dragged);
                                 $(window).bind('mouseup', handler.dropped);
+                                console.dir(selected);
+                                console.dir(selected.node);
+                                console.dir(selected.node.data);
+                                if(selected.node.data.link) location.href = selected.node.data.link;
+                                showModal(selected.node.data.name);
                                 return false;
                             },
                             dragged: function (e) {
@@ -120,7 +308,7 @@
 
                 stageList.forEach((stage,i) => {
                     if(stage.head)
-                        sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#88cc88"});
+                        sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#88cc88",link:'/'});
                     else if (stage.tail)
                         sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#ff8888"});
                     else
@@ -145,7 +333,7 @@
                 sys.addEdge('Node 5', 'Node 6', {linkcolor: "#888888"});
                 */
 
-            })
+            });
         })(this.jQuery);
     </script>
 </div>
