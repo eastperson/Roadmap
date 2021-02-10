@@ -42,8 +42,8 @@
             padding: 20px;
             padding-bottom: 25px;
             /*border: 1px black solid;*/
-            background-color: #d32323;
             border-radius: 3px 3px 0 0;
+            font-size: 18px;
         }
         .modal_wrapper_regwait{
             margin: 10px;
@@ -65,7 +65,6 @@
             font-weight: bold;
             width: 100%;
             height: 50px;
-            color: #d32323;
             /*text-shadow: 1px 1px 6px rgba(44, 36, 36, 0.171);*/
         }
         .modal_top{
@@ -133,61 +132,164 @@
 <div class="container">
     <div th:replace="fragments.html :: roadmap-info"></div>
     <div th:replace="fragments.html :: roadmap-menu(roadmapMenu='map')"></div>
+    <button id="modal-flag">수정하기</button>
 
     <canvas id="viewport" width="1920" height="1080"></canvas>
 
     <!-- The Modal -->
     <div id="nodeModal" class="modal">
         <!-- Modal content -->
-        <div class="modal-content">
-            <span class="close_modal"><i class="fas fa-times"></i></span>
+        <form class="modal-content" id="form" method="" th:action="@{/roadmap}">
+            <span class="close_modal"><i class="far fa-times-circle"></i></span>
+            <hr/>
+            <nav class="nav nav-pills nav-justified">
+                <button id="modifyBtn" class="nav-link active" aria-current="page" href="#">노드 수정</button>
+                <button id="addBtn" class="nav-link" href="#">노드 추가</button>
+                <button id="removeBtn" class="nav-link btn-danger" href="#">노드 제거</button>
+            </nav>
             <div class="modal_header">
                 <span id="node-title"></span>
                 <span id="short-description"></span>
             </div>
-        </div>
+            <hr/>
+            <div class="modal-body">
+                <div>
+                    <label for="form-id">아이디</label>
+                    <input type="text" id="form-id" name="id">
+                </div>
+                <div>
+                    <label for="form-parentId">Parent 아이디</label>
+                    <input type="text" id="form-parentId" name="parentId">
+                </div>
+                <div>
+                    <label for="form-parentType">Parent 타입</label>
+                    <input type="text" id="form-parentType" name="parentType">
+                </div>
+                <div class="modal-modify">
+                    <div>
+                        <label for="form-title">타이틀</label>
+                        <input type="text" id="form-title" name="title">
+                    </div>
+                    <div>
+                        <label for="form-shortDescription">짧은 소개</label>
+                        <input type="text" id="form-shortDescription" name="shortDescription">
+                    </div>
+                    <div>
+                        <label for="form-url">URL</label>
+                        <input type="text" id="form-url" name="url">
+                    </div>
+                    <div>
+                        <label for="form-complete">완료</label>
+                        <input type="checkbox" id="form-complete" name="complete">
+                        <label for="form-read">읽음</label>
+                        <input type="checkbox" id="form-read" name="read">
+                    </div>
+                    <div>
+                        <label for="form-text">텍스트</label>
+                        <input type="text" id="form-text" name="text">
+                    </div>
+                </div>
+                <div class="modal-add">
+                    <div>
+                        <label for="form-title">타이틀</label>
+                        <input type="text" id="form-title-add" name="add-title">
+                    </div>
+                    <div>
+                        <label for="form-title">타이틀</label>
+                        <input type="text" id="form-nodeType" name="nodeType">
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div class="modal-footer">
+                <button class="btn btn-warning" id="form-modify-submitBtn" data-oper="">수정</button>
+                <button class="btn btn-warning" id="form-add-submitBtn" style="display: none" data-oper="">추가</button>
+                <button class="btn btn-dark closeBtn">취소</button>
+            </div>
+        </form>
     </div>
 
     <div th:replace="fragments.html :: footer"></div>
     <div th:replace="fragments.html :: modal"></div>
+    <script th:inline="javascript">
+        let roadmapAppKey = [[${roadmapAppKey}]];
+        let host = [[${host}]];
+        let stageListStr = [[${stageList}]];
+        let path = [[${roadmap.path}]];
+    </script>
     <script>
 
-        const modal = $("#nodeModal"),
-            close = $(".close_modal");
+        let nodeModal = document.querySelector("#nodeModal"),
+            closeBtn = document.querySelector(".close_modal"),
+            modifySubmitBtn = document.querySelector("#form-modify-submitBtn"),
+            addSubmitBtn = document.querySelector("#form-add-submitBtn"),
+            modifyBtn = document.querySelector("#modifyBtn"),
+            addBtn = document.querySelector("#addBtn"),
+            removeBtn = document.querySelector("#removeBtn"),
+            formObj = document.querySelector("#form"),
+            modalBody = document.querySelector(".modal-body");
 
-        close.on("click", (e) => {
-            modal.css("display","none");
+        modifyBtn.addEventListener("click",(e) => {
+            document.querySelector(".modal-modify").setAttribute("style","{display:block}")
+            document.querySelector(".modal-add").setAttribute("style","{display:none}")
+        });
+
+        addBtn.addEventListener("click", (e) => {
+            document.querySelector(".modal-modify").setAttribute("style","{display:none}")
+            document.querySelector(".modal-add").setAttribute("style","{display:block}")
+        });
+
+        modifySubmitBtn.addEventListener("click",(e) => {
+           e.preventDefault();
+           formObj.action = "/roadmap/api/" + path + "/node/modify";
+           formObj.method = "post";
+           formObj.submit();
+        });
+
+        addSubmitBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            let formData = new FormData();
+            formObj.action = "/roadmap/api/" + path + "/node/add";
+            formObj.method = "post";
+            formObj.submit();
+        });
+
+        closeBtn.addEventListener("click",(e) => {
+            e.preventDefault();
+            nodeModal.setAttribute("style","{display : none}")
         });
 
         window.onclick = function(e) {
             if (e.target === document.getElementById('nodeModal')) {
-                modal.css("display","none");
+                nodeModal.setAttribute("style","{display : none}")
             }
         }
 
         // esc 눌러서 모달 escape
         $(document).keyup(function(e) {
             if(e.key === "Escape"){
-                modal.css("display","none");
+                nodeModal.setAttribute("style","{display : none}")
             }
         });
 
-        $(".alert_closebtn").on("click", e => {
-            $(e.target).parent().addClass("hide");
-            $(e.target).parent().removeClass("show");
-            //setTimeout($(e.target).parent().removeClass("showAlert"),5000);
-        });
-
-    </script>
-    <script th:inline="javascript">
-        let roadmapAppKey = [[${roadmapAppKey}]];
-        let host = [[${host}]];
-        let stageListStr = [[${stageList}]];
         let stageList = JSON.parse(stageListStr);
         let move = function (){
             console.log('move....................');
             location.href = '/';
         }
+        let nodeModalFlag = false;
+        let modalFlagBtn = document.querySelector("#modal-flag");
+
+        modalFlagBtn.addEventListener("click", (e) => {
+            if(nodeModalFlag) {
+                modalFlagBtn.classList.add('active');
+                nodeModalFlag = false;
+            }
+            else {
+                modalFlagBtn.classList.remove('active');
+                nodeModalFlag = true;
+            }
+        });
 
     </script>
     <script>
@@ -195,17 +297,44 @@
         (function ($) {
 
             let nodeModal = document.getElementById('nodeModal');
-            let showModal = function (str) {
+            let showModal = function (nodeData) {
+
+                console.log('---------------------show Modal');
+                console.log(nodeData);
+                console.dir(nodeData);
 
                 nodeModal.classList.remove('hide');
                 nodeModal.classList.add('show');
                 nodeModal.style.display = 'block';
 
                 let modalTitle = nodeModal.querySelector('#node-title');
-                let modalBodyInput = nodeModal.querySelector('#short-description');
+                let modalDescription = nodeModal.querySelector('#short-description');
 
-                modalTitle.textContent = str + ' 노드 만들기';
-                modalBodyInput.textContent = str + '의 짧은 소개';
+                let inputId = document.querySelector('input[name="id"]'),
+                    inputParentId = document.querySelector('input[name="parentId"]'),
+                    inputParentType = document.querySelector('input[name="parentType"]'),
+                    inputTitle = document.querySelector('input[name="title"]'),
+                    inputShortDescription = document.querySelector('input[name="shortDescription"]'),
+                    inputUrl = document.querySelector('input[name="url"]'),
+                    inputComplete = document.querySelector('input[name="complete"]'),
+                    inputRead = document.querySelector('input[name="read"]'),
+                    inputText = document.querySelector('input[name="text"]');
+
+                console.log('----------------------input title');
+                console.dir(inputTitle);
+
+                modalTitle.textContent = nodeData.name + ' 노드 설정';
+                inputId.value = nodeData.id;
+                modalDescription.textContent = nodeData.shortDescription;
+                inputShortDescription.value =nodeData.shortDescription;
+                inputParentId.value = nodeData.parentId;
+                inputParentType.value = nodeData.parentType;
+                inputTitle.value = nodeData.title;
+                inputUrl.value = nodeData.title;
+                if(nodeData.complete) inputComplete.checked = true;
+                if(nodeData.read) inputRead.checked = true;
+                inputText.value = nodeData.text;
+
             };
 
             var Renderer = function (canvas) {
@@ -256,7 +385,9 @@
                                 console.dir(selected.node);
                                 console.dir(selected.node.data);
                                 if(selected.node.data.link) location.href = selected.node.data.link;
-                                showModal(selected.node.data.name);
+                                if(nodeModalFlag){
+                                    showModal(selected.node.data);
+                                }
                                 return false;
                             },
                             dragged: function (e) {
@@ -288,15 +419,20 @@
                 var sys = arbor.ParticleSystem(700, 700, 0.5);
                 sys.renderer = Renderer("#viewport");
 
-                let recursionNode = function (childNodeList, count, index){
+                let recursionNode = function (childNodeList, count, index,parentType,parentId){
                     console.log("node list : "+childNodeList);
                     console.log("count : "+count);
                     if(childNodeList.length > 0)
                         childNodeList.forEach((node,j) => {
-                            sys.addNode('Node ' + (count), {name : node.title, nodecolor:"#888888"});
+                            sys.addNode('Node ' + (count), {name : node.title, nodecolor:"#888888",
+                                                                id : node.id,
+                                                                parentType : parentType, parentId : parentId,
+                                                                nodeType : node.nodeType, title:node.title,
+                                                                shortDescription:node.shortDescription, url : node.url,
+                                                                complete : node.complete, read : node.read, text:node.text});
                             sys.addEdge('Node ' + (index+1), 'Node ' + (count), {linkcolor: "#888888"});
                             count++;
-                            if(node.childs.length > 0) recursionNode(node.childs, count, count-2);
+                            if(node.childs.length > 0) recursionNode(node.childs, count, count-2,"node",node.id);
                         });
                     else return;
                 }
@@ -316,7 +452,7 @@
                     if(len > i+1)
                         sys.addEdge('Node ' + (i+1), 'Node ' + (i+2), {linkcolor: "#888888"});
 
-                    recursionNode(stage.nodeList,count, i);
+                    recursionNode(stage.nodeList,count, i,"stage",stage.id);
                 });
                 /*
                 sys.addNode('Node 1', {name: "Node 1", nodecolor: "#88cc88"});
