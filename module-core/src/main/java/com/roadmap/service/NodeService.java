@@ -1,11 +1,13 @@
 package com.roadmap.service;
 
+import com.roadmap.dto.roadmap.form.NodeAddForm;
 import com.roadmap.dto.roadmap.form.NodeForm;
 import com.roadmap.model.Node;
 import com.roadmap.model.NodeType;
 import com.roadmap.model.Roadmap;
 import com.roadmap.model.Stage;
 import com.roadmap.repository.NodeRepository;
+import com.roadmap.repository.StageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -20,21 +22,29 @@ import org.springframework.ui.ModelMap;
 public class NodeService {
 
     private final NodeRepository nodeRepository;
+    private final StageRepository stageRepository;
     private final ModelMapper modelMaper;
 
 
-    public Node addNewNode(Stage stage, NodeForm nodeForm){
+    public Long addNewNode(Stage stage, NodeAddForm nodeForm){
+        nodeForm.setId(null);
         Node newNode = modelMaper.map(nodeForm,Node.class);
         newNode.setStage(stage);
-        stage.getNodeList().add(newNode);
-        return nodeRepository.save(newNode);
+        Node node = nodeRepository.save(newNode);
+        return node.getId();
     }
 
-    public Node addNewNode(Node node, NodeForm nodeForm){
+    public Long addNewNode(Node parent, NodeAddForm nodeForm){
+        log.info("------------------------add new node");
+        log.info("------------------------parent : " + parent);
+        log.info("------------------------nodeForm : " + nodeForm);
+        nodeForm.setId(null);
         Node newNode = modelMaper.map(nodeForm,Node.class);
-        newNode.setParent(node);
-        node.getChilds().add(newNode);
-        return nodeRepository.save(newNode);
+        log.info("new node : " + newNode);
+        Node node = nodeRepository.save(newNode);
+        log.info("node : " + node);
+        newNode.setParent(parent);
+        return node.getId();
     }
 
     public void removeNode(Node node) {

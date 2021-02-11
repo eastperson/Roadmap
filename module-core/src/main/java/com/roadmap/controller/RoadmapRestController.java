@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roadmap.config.AppProperties;
 import com.roadmap.dto.roadmap.NodeDTO;
 import com.roadmap.dto.roadmap.StageDTO;
-import com.roadmap.dto.roadmap.form.NodeForm;
+import com.roadmap.dto.roadmap.form.NodeAddForm;
 import com.roadmap.dto.roadmap.form.StageForm;
 import com.roadmap.model.Node;
 import com.roadmap.model.Roadmap;
@@ -20,6 +20,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,10 +92,16 @@ public class RoadmapRestController {
     }
 
     @PostMapping("/node/new")
-    public ResponseEntity<NodeDTO> registerNode(@RequestBody @Valid NodeForm nodeForm, Errors errors, Long id) throws JsonProcessingException {
+    @Transactional
+    public ResponseEntity<NodeDTO> registerNode(@RequestBody String nodeFormStr, Errors errors) throws JsonProcessingException {
 
         log.info("------------------register new node---------------------");
+
+        NodeAddForm nodeForm = objectMapper.readValue(nodeFormStr,NodeAddForm.class);
+
         log.info(nodeForm);
+
+        Long id = nodeForm.getId();
 
         if(errors.hasErrors()) {
             return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
@@ -103,17 +110,28 @@ public class RoadmapRestController {
         if(id == null)
             return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
 
+        log.info("-----------------------success---------------------------");
+
         Node node = null;
+        Node newNode = null;
         NodeDTO nodeDTO = new NodeDTO();
+        Long newId = null;
 
         if(nodeForm.getParentType().equals("stage")){
             Stage parent = stageRepository.findById(id).orElseThrow();
-            node = nodeService.addNewNode(parent,nodeForm);
+            newId = nodeService.addNewNode(parent,nodeForm);
             nodeDTO.setStageId(parent.getId());
+            node = nodeRepository.findById(newId).orElseThrow();
+            parent.getNodeList().add(node);
+            stageRepository.save(parent);
         } else {
             Node parent = nodeRepository.findById(id).orElseThrow();
-            node = nodeService.addNewNode(parent,nodeForm);
+            log.info("parent : " + parent);
+            newId = nodeService.addNewNode(parent,nodeForm);
             nodeDTO.setParentId(parent.getId());
+            node = nodeRepository.findById(newId).orElseThrow();
+            parent.getChilds().add(node);
+            nodeRepository.save(parent);
         }
 
         nodeDTO.setId(node.getId());

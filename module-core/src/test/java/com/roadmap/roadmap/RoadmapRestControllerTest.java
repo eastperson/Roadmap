@@ -2,6 +2,7 @@ package com.roadmap.roadmap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roadmap.config.AppProperties;
+import com.roadmap.dto.roadmap.form.NodeAddForm;
 import com.roadmap.dto.roadmap.form.NodeForm;
 import com.roadmap.dto.roadmap.form.RoadmapForm;
 import com.roadmap.dto.roadmap.form.StageForm;
@@ -280,15 +281,17 @@ public class RoadmapRestControllerTest {
         StageForm stageForm = new StageForm();
         stageForm.setTitle("제목 테스트");
         Stage stage = roadmapService.addNewStage(roadmap,modelMapper.map(stageForm,Stage.class));
-        NodeForm nodeForm = new NodeForm();
+        NodeAddForm nodeForm = new NodeAddForm();
         nodeForm.setNodeType("text");
         nodeForm.setTitle("노드 제목 테스트");
         nodeForm.setParentType("stage");
-        Node node = nodeService.addNewNode(stage,nodeForm);
+        Long newId = nodeService.addNewNode(stage,nodeForm);
+        Node node = nodeRepository.findById(newId).orElseThrow();
         nodeForm.setParentType("node");
+        nodeForm.setId(node.getId());
+
 
         mockMvc.perform(post("/roadmap/api/{path}/node/new",roadmap.getEncodedPath())
-                .param("id",node.getId().toString())
                 .content(asJsonString(nodeForm))
                 .contentType("application/json")
                 .accept(MediaType.APPLICATION_JSON)

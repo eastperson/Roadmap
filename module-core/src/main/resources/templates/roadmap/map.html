@@ -24,7 +24,6 @@
             position: relative;
             background-color: #fefefe;
             margin: 10% auto; /* 15% from the top and centered */
-
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -39,8 +38,6 @@
         .modal_header{
             padding: 0 0;
             width: 100%;
-            padding: 20px;
-            padding-bottom: 25px;
             /*border: 1px black solid;*/
             border-radius: 3px 3px 0 0;
             font-size: 18px;
@@ -110,14 +107,14 @@
             top : 10px;
             display : inline-block;
             margin : 0 0;
-            color: white;
-            font-size: 24px;
+            color: black;
+            font-size: 36px;
 
         }
 
         .close_modal:hover,
         .close_modal:focus {
-            color: black;
+            color: gray;
             text-decoration: none;
             cursor: pointer;
         }
@@ -132,14 +129,14 @@
 <div class="container">
     <div th:replace="fragments.html :: roadmap-info"></div>
     <div th:replace="fragments.html :: roadmap-menu(roadmapMenu='map')"></div>
-    <button id="modal-flag">수정하기</button>
+    <button class="btn btn-outline-primary" id="modal-flag">수정하기</button>
 
     <canvas id="viewport" width="1920" height="1080"></canvas>
 
     <!-- The Modal -->
     <div id="nodeModal" class="modal">
         <!-- Modal content -->
-        <form class="modal-content" id="form" method="" th:action="@{/roadmap}">
+        <form class="modal-content modalForm" id="form"method="" th:action="@{/roadmap}">
             <span class="close_modal"><i class="far fa-times-circle"></i></span>
             <hr/>
             <nav class="nav nav-pills nav-justified">
@@ -153,50 +150,66 @@
             </div>
             <hr/>
             <div class="modal-body">
-                <div>
-                    <label for="form-id">아이디</label>
-                    <input type="text" id="form-id" name="id">
-                </div>
-                <div>
-                    <label for="form-parentId">Parent 아이디</label>
-                    <input type="text" id="form-parentId" name="parentId">
-                </div>
-                <div>
-                    <label for="form-parentType">Parent 타입</label>
-                    <input type="text" id="form-parentType" name="parentType">
-                </div>
                 <div class="modal-modify">
                     <div>
-                        <label for="form-title">타이틀</label>
-                        <input type="text" id="form-title" name="title">
+                        <label for="form-id" class="col-form-label">아이디</label>
+                        <input type="text" id="form-id" name="id" class="form-control">
                     </div>
                     <div>
-                        <label for="form-shortDescription">짧은 소개</label>
-                        <input type="text" id="form-shortDescription" name="shortDescription">
+                        <label for="form-parentId" class="col-form-label">Parent 아이디</label>
+                        <input type="text" id="form-parentId" name="parentId" class="form-control">
                     </div>
                     <div>
-                        <label for="form-url">URL</label>
-                        <input type="text" id="form-url" name="url">
+                        <label for="form-parentType" class="col-form-label">Parent 타입</label>
+                        <input type="text" id="form-parentType" name="parentType" class="form-control">
                     </div>
                     <div>
-                        <label for="form-complete">완료</label>
-                        <input type="checkbox" id="form-complete" name="complete">
-                        <label for="form-read">읽음</label>
-                        <input type="checkbox" id="form-read" name="read">
+                        <label for="form-title" class="col-form-label">타이틀</label>
+                        <input type="text" id="form-title" name="title" class="form-control">
                     </div>
                     <div>
-                        <label for="form-text">텍스트</label>
-                        <input type="text" id="form-text" name="text">
+                        <label for="form-shortDescription" class="col-form-label">짧은 소개</label>
+                        <input type="text" id="form-shortDescription" name="shortDescription" class="form-control">
+                    </div>
+                    <div>
+                        <label for="form-url" class="col-form-label">URL</label>
+                        <input type="text" id="form-url" name="url" class="form-control">
+                    </div>
+                    <div>
+                        <label for="form-complete" class="col-form-label">완료</label>
+                        <input type="checkbox" id="form-complete" name="complete" class="form-control">
+                        <label for="form-read" class="col-form-label">읽음</label>
+                        <input type="checkbox" id="form-read" name="read" class="form-control">
+                    </div>
+                    <div>
+                        <label for="form-text" class="col-form-label">텍스트</label>
+                        <input type="text" id="form-text" name="text" class="form-control">
+                    </div>
+                    <div>
+                        <label for="form-title">노드 타입</label>
+                        <input type="text" name="nodeType" class="form-control">
                     </div>
                 </div>
-                <div class="modal-add">
+                <div class="modal-add" style="display: none">
                     <div>
-                        <label for="form-title">타이틀</label>
-                        <input type="text" id="form-title-add" name="add-title">
+                        <label for="form-id" class="col-form-label">아이디</label>
+                        <input type="text" name="id" class="form-control">
+                    </div>
+                    <div>
+                        <label for="form-parentId" class="col-form-label">Parent 아이디</label>
+                        <input type="text" name="parentId" class="form-control">
+                    </div>
+                    <div>
+                        <label for="form-parentType" class="col-form-label">Parent 타입</label>
+                        <input type="text" name="parentType" class="form-control">
                     </div>
                     <div>
                         <label for="form-title">타이틀</label>
-                        <input type="text" id="form-nodeType" name="nodeType">
+                        <input type="text" name="title" class="form-control">
+                    </div>
+                    <div>
+                        <label for="form-title">노드 타입</label>
+                        <input type="text"  name="nodeType" class="form-control">
                     </div>
                 </div>
             </div>
@@ -229,30 +242,81 @@
             formObj = document.querySelector("#form"),
             modalBody = document.querySelector(".modal-body");
 
-        modifyBtn.addEventListener("click",(e) => {
-            document.querySelector(".modal-modify").setAttribute("style","{display:block}")
-            document.querySelector(".modal-add").setAttribute("style","{display:none}")
-        });
 
-        addBtn.addEventListener("click", (e) => {
-            document.querySelector(".modal-modify").setAttribute("style","{display:none}")
-            document.querySelector(".modal-add").setAttribute("style","{display:block}")
-        });
-
-        modifySubmitBtn.addEventListener("click",(e) => {
-           e.preventDefault();
-           formObj.action = "/roadmap/api/" + path + "/node/modify";
-           formObj.method = "post";
-           formObj.submit();
-        });
-
-        addSubmitBtn.addEventListener("click", (e) => {
+        let modifyBtnNodeHandler = function (e) {
             e.preventDefault();
-            let formData = new FormData();
-            formObj.action = "/roadmap/api/" + path + "/node/add";
-            formObj.method = "post";
-            formObj.submit();
-        });
+            document.querySelector(".modal-modify").setAttribute("style","display:block");
+            addSubmitBtn.setAttribute("style","display:none");
+            modifySubmitBtn.setAttribute("style","display:block");
+            document.querySelector(".modal-add").setAttribute("style","display:none");
+        };
+
+        let addBtnNodeHandler = function (e) {
+            e.preventDefault();
+            addSubmitBtn.setAttribute("style","display:block");
+            modifySubmitBtn.setAttribute("style","display:none");
+            document.querySelector(".modal-modify").setAttribute("style","display:none");
+            document.querySelector(".modal-add").setAttribute("style","display:block");
+        };
+
+        let modifySubmitBtnNodeHandler = function (e){
+            e.preventDefault();
+            let formData = new {};
+            let inputData = $(".modal-modify input");
+            for (let i = 0; i < inputData.length; i++) {
+                formData.append($(".modal-modify input")[i].name, $(".modal-modify input")[i].value)
+            }
+
+            $.ajax({
+                url: "/roadmap/api/" + path + "/node/modify",
+                processData: false,
+                contentType: 'application/json',
+                data : formData, type: 'POST',
+                dataType: 'json',
+                beforeSend : function (xhr) {
+                    xhr.setRequestHeader('Authorization', "Bearer " + roadmapAppKey);
+                },
+                success: function (result) {
+                    alert(result);
+                    console.log(result);
+                    nodeModal.setAttribute("style", "{display : none}")
+                }
+            });
+        };
+
+        let addSubmitBtnNodeHandler = function (e) {
+            e.preventDefault();
+            let formData = {};
+            let inputData = $(".modal-add input");
+            for (let i = 0; i < inputData.length; i++) {
+                if(inputData[i].name.toString().includes("id") || inputData[i].name.toString().includes("Id")) formData[inputData[i].name] = parseInt(inputData[i].value);
+                else formData[inputData[i].name] = inputData[i].value;
+
+                console.log(inputData[i].name);
+                console.log(inputData[i].value);
+            }
+            console.dir(formData);
+
+            $.ajax({
+                url: "/roadmap/api/" + path + "/node/new",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(formData),
+                type: 'POST',
+                dataType: 'json',
+                beforeSend : function (xhr) {
+                    xhr.setRequestHeader('Accept', "application/json");
+                    xhr.setRequestHeader('Authorization', "Bearer " + roadmapAppKey);
+                },
+                success: function (result) {
+                    alert(result);
+                    console.log(result);
+                    nodeModal.setAttribute("style", "{display : none}")
+                }
+            });
+        };
+
+
+
 
         closeBtn.addEventListener("click",(e) => {
             e.preventDefault();
@@ -282,14 +346,29 @@
 
         modalFlagBtn.addEventListener("click", (e) => {
             if(nodeModalFlag) {
-                modalFlagBtn.classList.add('active');
+                modalFlagBtn.classList.add('btn-outline-primary');
+                modalFlagBtn.classList.remove('btn-primary');
                 nodeModalFlag = false;
             }
             else {
-                modalFlagBtn.classList.remove('active');
+                modalFlagBtn.classList.add('btn-primary');
+                modalFlagBtn.classList.remove('btn-outline-primary');
                 nodeModalFlag = true;
             }
         });
+
+        document.querySelector(".closeBtn").addEventListener("click",(e) => {
+            e.preventDefault();
+            nodeModal.setAttribute("style","{display : none}")
+        });
+
+        modifyBtn.addEventListener("click",modifyBtnNodeHandler);
+
+        addBtn.addEventListener("click", addBtnNodeHandler);
+
+        modifySubmitBtn.addEventListener("click",modifySubmitBtnNodeHandler);
+
+        addSubmitBtn.addEventListener("click", addSubmitBtnNodeHandler);
 
     </script>
     <script>
@@ -297,6 +376,47 @@
         (function ($) {
 
             let nodeModal = document.getElementById('nodeModal');
+            let showModalStage = function(nodeData) {
+
+                console.log('---------------------show Modal');
+                console.log(nodeData);
+                console.dir(nodeData);
+
+                nodeModal.classList.remove('hide');
+                nodeModal.classList.add('show');
+                nodeModal.style.display = 'block';
+
+                let modalTitle = nodeModal.querySelector('#node-title');
+                let modalDescription = nodeModal.querySelector('#short-description');
+
+                for (let i = 0; i < 2; i++){
+                    let modalType = null;
+                    if(i ===0) modalType = '.modal-modify ';
+                    if(i === 1) modalType = '.modal-add ';
+
+                    let inputId = document.querySelector(modalType + "input[name='id']"),
+                        inputParentId = document.querySelector(modalType + 'input[name="parentId"]'),
+                        inputParentType = document.querySelector(modalType + 'input[name="parentType"]'),
+                        inputTitle = document.querySelector(modalType + 'input[name="title"]'),
+                        inputShortDescription = document.querySelector(modalType + 'input[name="shortDescription"]'),
+                        inputUrl = document.querySelector(modalType + 'input[name="url"]'),
+                        inputComplete = document.querySelector(modalType + 'input[name="complete"]'),
+                        inputRead = document.querySelector(modalType + 'input[name="read"]'),
+                        inputText = document.querySelector(modalType + 'input[name="text"]'),
+                        inputNodeType = document.querySelector(modalType + 'input[name="nodeType"]');
+
+                    console.log('----------------------input title');
+                    console.dir(inputTitle);
+
+                    modalTitle.textContent = nodeData.name + ' 노드 설정';
+                    inputId.value = nodeData.id;
+                    inputParentType.value = nodeData.parentType;
+                    inputNodeType.value = 'text';
+                    inputTitle.value = nodeData.title;
+
+
+                };
+            };
             let showModal = function (nodeData) {
 
                 console.log('---------------------show Modal');
@@ -310,30 +430,42 @@
                 let modalTitle = nodeModal.querySelector('#node-title');
                 let modalDescription = nodeModal.querySelector('#short-description');
 
-                let inputId = document.querySelector('input[name="id"]'),
-                    inputParentId = document.querySelector('input[name="parentId"]'),
-                    inputParentType = document.querySelector('input[name="parentType"]'),
-                    inputTitle = document.querySelector('input[name="title"]'),
-                    inputShortDescription = document.querySelector('input[name="shortDescription"]'),
-                    inputUrl = document.querySelector('input[name="url"]'),
-                    inputComplete = document.querySelector('input[name="complete"]'),
-                    inputRead = document.querySelector('input[name="read"]'),
-                    inputText = document.querySelector('input[name="text"]');
+                for (let i = 0; i < 2; i++){
+                    let modalType = null;
+                    if(i ===0) modalType = '.modal-modify ';
+                    if(i === 1) modalType = '.modal-add ';
 
-                console.log('----------------------input title');
-                console.dir(inputTitle);
+                    let inputId = document.querySelector(modalType + "input[name='id']"),
+                        inputParentId = document.querySelector(modalType + 'input[name="parentId"]'),
+                        inputParentType = document.querySelector(modalType + 'input[name="parentType"]'),
+                        inputTitle = document.querySelector(modalType + 'input[name="title"]'),
+                        inputShortDescription = document.querySelector(modalType + 'input[name="shortDescription"]'),
+                        inputUrl = document.querySelector(modalType + 'input[name="url"]'),
+                        inputComplete = document.querySelector(modalType + 'input[name="complete"]'),
+                        inputRead = document.querySelector(modalType + 'input[name="read"]'),
+                        inputText = document.querySelector(modalType + 'input[name="text"]'),
+                        inputNodeType = document.querySelector(modalType + 'input[name="nodeType"]');
 
-                modalTitle.textContent = nodeData.name + ' 노드 설정';
-                inputId.value = nodeData.id;
-                modalDescription.textContent = nodeData.shortDescription;
-                inputShortDescription.value =nodeData.shortDescription;
-                inputParentId.value = nodeData.parentId;
-                inputParentType.value = nodeData.parentType;
-                inputTitle.value = nodeData.title;
-                inputUrl.value = nodeData.title;
-                if(nodeData.complete) inputComplete.checked = true;
-                if(nodeData.read) inputRead.checked = true;
-                inputText.value = nodeData.text;
+                    console.log('----------------------input title');
+                    console.dir(inputTitle);
+
+                    modalTitle.textContent = nodeData.name + ' 노드 설정';
+                    inputId.value = nodeData.id;
+                    inputParentId.value = nodeData.parentId;
+                    inputParentType.value = nodeData.parentType;
+                    inputNodeType.value = nodeData.nodeType;
+
+                    if(i !== 1){
+                        inputTitle.value = nodeData.title;
+                        modalDescription.textContent = nodeData.shortDescription;
+                        inputShortDescription.value =nodeData.shortDescription;
+                        inputUrl.value = nodeData.title;
+                        if(nodeData.complete) inputComplete.checked = true;
+                        if(nodeData.read) inputRead.checked = true;
+                        inputText.value = nodeData.text;
+                    }
+
+                };
 
             };
 
@@ -385,8 +517,11 @@
                                 console.dir(selected.node);
                                 console.dir(selected.node.data);
                                 if(selected.node.data.link) location.href = selected.node.data.link;
-                                if(nodeModalFlag){
+                                if(nodeModalFlag && selected.node.data.parentType === 'node'){
                                     showModal(selected.node.data);
+                                }
+                                if(nodeModalFlag && selected.node.data.parentType === 'stage'){
+                                    showModalStage(selected.node.data);
                                 }
                                 return false;
                             },
@@ -444,15 +579,19 @@
 
                 stageList.forEach((stage,i) => {
                     if(stage.head)
-                        sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#88cc88",link:'/'});
+                        sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#88cc88",link:'/',
+                                                        id : stage.id, parentType: 'stage',title:stage.title});
                     else if (stage.tail)
-                        sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#ff8888"});
+                        sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#ff8888",
+                                                        id : stage.id, parentType: 'stage',title:stage.title});
                     else
-                        sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#888888"});
+                        sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#6CC0BA",
+                                                        id : stage.id, parentType: 'stage',title:stage.title});
                     if(len > i+1)
-                        sys.addEdge('Node ' + (i+1), 'Node ' + (i+2), {linkcolor: "#888888"});
+                        sys.addEdge('Node ' + (i+1), 'Node ' + (i+2), {linkcolor: "#888888",
+                                                        id : stage.id, parentType: 'stage',title:stage.title});
 
-                    recursionNode(stage.nodeList,count, i,"stage",stage.id);
+                    recursionNode(stage.nodeList,count, i,"node",stage.id);
                 });
                 /*
                 sys.addNode('Node 1', {name: "Node 1", nodecolor: "#88cc88"});
@@ -491,6 +630,7 @@
     });
      */
 </script>
+<div th:replace="fragments.html :: ajax-csrf-header"></div>
 <script type="application/javascript">
     $(function (){
         $('[data-toggle="tooltip"]').tooltip();

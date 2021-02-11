@@ -23,9 +23,11 @@ public class MemberRepositoryTest {
     void memberWithRoadmapsByNickname(){
 
        Member member = memberRepository.findWithRoadmapByNickname("kjuioq@nate.com");
-       assertTrue(member.getNickname().equals("kjuioq@nate.com"));
-       assertNotNull(member.getRoadmaps());
-       log.info(member);
-       log.info(member.getRoadmaps());
+       if(member != null){
+           assertTrue(member.getNickname().equals("kjuioq@nate.com"));
+           assertNotNull(member.getRoadmaps());
+           log.info(member);
+           log.info(member.getRoadmaps());
+       }
     }
 }

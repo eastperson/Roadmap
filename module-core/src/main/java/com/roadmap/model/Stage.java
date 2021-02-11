@@ -33,5 +33,5 @@ public class Stage extends BaseEntity{
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Node> nodeList = new ArrayList<>();
-
+    
 }

@@ -17,7 +17,7 @@ public class Node extends BaseEntity{
     @ManyToOne(fetch = FetchType.EAGER)
     private Stage stage;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Node parent;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -36,6 +36,5 @@ public class Node extends BaseEntity{
     private boolean read;
 
     private String text;
-
 
 }
