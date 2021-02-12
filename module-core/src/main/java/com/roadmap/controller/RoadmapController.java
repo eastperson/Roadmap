@@ -110,7 +110,7 @@ public class RoadmapController {
         return "roadmap/map";
     }
 
-    private void recursionNode(Node node){
+    public static void recursionNode(Node node){
         if(node.getChilds() != null) {
             node.getChilds().stream().forEach(n -> {
                 n.setParent(null);

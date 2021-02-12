@@ -82,13 +82,24 @@ public class RoadmapRestController {
     }
 
     @GetMapping("/stage/getList")
-    public ResponseEntity<List<StageDTO>> getStageList(@PathVariable String path) {
+    public ResponseEntity<List<Stage>> getStageList(@PathVariable String path) {
 
         log.info("------------------get stage list---------------------");
 
         Roadmap roadmap = roadmapRepository.findWithAllByPath(path);
 
-        return new ResponseEntity<>(roadmap.getStageList().stream().map(stage -> modelMapper.map(stage,StageDTO.class)).collect(Collectors.toList()), HttpStatus.OK);
+        roadmap.getStageList().stream().sorted((s1,s2) -> (int) (s2.getOrd() - s1.getOrd()))
+                .collect(Collectors.toList())
+                .forEach(stage ->{
+                    stage.setRoadmap(null);
+                    stage.getNodeList().stream().forEach(node -> {
+                        node.setStage(null);
+                        node.setParent(null);
+                        RoadmapController.recursionNode(node);
+                    });
+                });
+
+        return new ResponseEntity<>(roadmap.getStageList(), HttpStatus.OK);
     }
 
     @PostMapping("/node/new")
