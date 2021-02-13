@@ -6,6 +6,8 @@ import com.roadmap.config.AppProperties;
 import com.roadmap.dto.roadmap.NodeDTO;
 import com.roadmap.dto.roadmap.StageDTO;
 import com.roadmap.dto.roadmap.form.NodeAddForm;
+import com.roadmap.dto.roadmap.form.NodeForm;
+import com.roadmap.dto.roadmap.form.NodeModalForm;
 import com.roadmap.dto.roadmap.form.StageForm;
 import com.roadmap.model.Node;
 import com.roadmap.model.Roadmap;
@@ -25,7 +27,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,6 +47,7 @@ public class RoadmapRestController {
     private final StageRepository stageRepository;
     private final NodeRepository nodeRepository;
     private final NodeService nodeService;
+
 
     @PostMapping("/stage/new")
     public ResponseEntity<StageDTO> registerStage(@RequestBody @Valid StageForm stageForm, Errors errors, @PathVariable String path) throws JsonProcessingException {
@@ -107,6 +112,7 @@ public class RoadmapRestController {
     public ResponseEntity<NodeDTO> registerNode(@RequestBody String nodeFormStr, Errors errors) throws JsonProcessingException {
 
         log.info("------------------register new node---------------------");
+        log.info(nodeFormStr);
 
         NodeAddForm nodeForm = objectMapper.readValue(nodeFormStr,NodeAddForm.class);
 
@@ -153,28 +159,56 @@ public class RoadmapRestController {
     }
 
     @DeleteMapping("/node/remove")
-    public ResponseEntity<String> removeNode(Long id){
+    public ResponseEntity<String> removeNode(@RequestBody String str) throws JsonProcessingException {
+
+        log.info("----------------------------------------remove node-------------------------");
+        Map<String,String> map = objectMapper.readValue(str, HashMap.class);
+        Long id = Long.valueOf(map.get("id"));
+        String parentType = map.get("parentType");
+
+        log.info("id : " + id);
+        log.info("parentType : " + parentType);
 
         if(id == null)
             return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
 
-        Optional<Node> result = nodeRepository.findById(id);
+        if(parentType.equalsIgnoreCase("node")){
+            Optional<Node> result = nodeRepository.findById(id);
 
-        if(!result.isPresent())
-            return new ResponseEntity<>("not find node fail",HttpStatus.BAD_REQUEST);
+            if(!result.isPresent())
+                return new ResponseEntity<>("존재하지 않는 node입니다.",HttpStatus.BAD_REQUEST);
 
-        Node node = result.get();
+            Node node = result.get();
 
-        if(node.getChilds().size() > 0){
-            return new ResponseEntity<>("not empty fail",HttpStatus.BAD_REQUEST);
+            log.info("node : " + node);
+
+            if(node.getChilds().size() > 0){
+                return new ResponseEntity<>("node에 자식 노드가 있습니다.",HttpStatus.BAD_REQUEST);
+            }
+
+            nodeService.removeNode(node);
+        } else {
+            Optional<Stage> result = stageRepository.findById(id);
+
+            if(!result.isPresent())
+                return new ResponseEntity<>("존재하지 않는 stage 입니다.",HttpStatus.BAD_REQUEST);
+
+            Stage stage = result.get();
+
+            log.info("node : " + stage);
+
+            if(stage.getNodeList().size() > 0) {
+                return new ResponseEntity<>("stage에 자식 노드들이 있습니다.",HttpStatus.BAD_REQUEST);
+            }
+
+            roadmapService.removeStage(stage.getRoadmap(),stage.getId());
         }
 
-        nodeService.removeNode(node);
 
         return new ResponseEntity<>("remove node successful", HttpStatus.OK);
     }
 
-    @PutMapping("/node/modify")
+    @PutMapping("/node/modify/type")
     public ResponseEntity<NodeDTO> modifyTypeNode(Long id,String type){
 
         if(id == null || type == null)
@@ -189,5 +223,42 @@ public class RoadmapRestController {
         Node updateNode = nodeService.modifyTypeNode(node,type);
 
         return new ResponseEntity<>(modelMapper.map(updateNode,NodeDTO.class), HttpStatus.OK);
+    }
+
+    @PutMapping({"/node/modify","/stage/modify"})
+    public ResponseEntity<NodeDTO> modifyNodeAndStage(@RequestBody String nodeFormStr) throws JsonProcessingException {
+        log.info("------------------modify node---------------------");
+
+        log.info("node form str : "+nodeFormStr);
+
+        NodeModalForm nodeForm = objectMapper.readValue(nodeFormStr, NodeModalForm.class);
+
+        log.info(nodeForm);
+
+        Long id = nodeForm.getId();
+
+        if(id == null)
+            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+
+        log.info("-----------------------success---------------------------");
+
+        Node node = null;
+        Node newNode = null;
+        NodeDTO nodeDTO = new NodeDTO();
+        Long newId = null;
+
+        if(nodeForm.getParentType().equals("stage")){
+            Stage stage = roadmapService.modifyStage(nodeForm);
+
+            nodeDTO.setId(stage.getId());
+            nodeDTO.setTitle(stage.getTitle());
+            nodeDTO.setComplete(stage.isComplete());
+        } else {
+            node = nodeService.modifyNode(nodeForm);
+
+            modelMapper.map(node,nodeDTO);
+        }
+
+        return new ResponseEntity<>(nodeDTO, HttpStatus.OK);
     }
 }

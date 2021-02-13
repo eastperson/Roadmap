@@ -1,8 +1,6 @@
 package com.roadmap.service;
 
-import com.roadmap.dto.roadmap.form.RoadmapDescriptionForm;
-import com.roadmap.dto.roadmap.form.RoadmapForm;
-import com.roadmap.dto.roadmap.form.StageForm;
+import com.roadmap.dto.roadmap.form.*;
 import com.roadmap.model.Member;
 import com.roadmap.model.Roadmap;
 import com.roadmap.model.Stage;
@@ -26,7 +24,6 @@ public class RoadmapService {
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     private final StageRepository stageRepository;
-
 
     public Roadmap registerForm(Member member, RoadmapForm roadmapForm) {
 
@@ -90,7 +87,19 @@ public class RoadmapService {
         if(result.isPresent()){
             Stage stage = result.get();
             roadmap.getStageList().remove(stage);
+            roadmap.getStageList().stream().forEach(s -> {
+                if(s.getOrd() > stage.getOrd()) s.setOrd(s.getOrd()-1);
+            });
+            int size = roadmap.getStageList().size();
+            roadmap.getStageList().get(size-1).setTail(true);
             stageRepository.delete(stage);
         }
+    }
+
+    public Stage modifyStage(NodeModalForm nodeForm) {
+        Stage stage = stageRepository.findById(nodeForm.getId()).orElseThrow();
+        stage.setTitle(nodeForm.getTitle());
+        stage.setComplete(nodeForm.isComplete());
+        return stageRepository.save(stage);
     }
 }

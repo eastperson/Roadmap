@@ -2,6 +2,7 @@ package com.roadmap.service;
 
 import com.roadmap.dto.roadmap.form.NodeAddForm;
 import com.roadmap.dto.roadmap.form.NodeForm;
+import com.roadmap.dto.roadmap.form.NodeModalForm;
 import com.roadmap.model.Node;
 import com.roadmap.model.NodeType;
 import com.roadmap.model.Roadmap;
@@ -49,12 +50,28 @@ public class NodeService {
 
     public void removeNode(Node node) {
 
+        log.info("------------------------------remove node");
+
+        log.info("node stage  : " + node.getStage());
+        log.info("node parent  : " + node.getParent());
+
+
         if(node.getStage() != null){
-            node.getStage().getNodeList().remove(node);
+            log.info("------------------------------remove stage node");
+            Stage stage = node.getStage();
+            log.info("------------------------------before stage : " + stage);
+            stage.getNodeList().remove(node);
+            node.setStage(null);
+            log.info("------------------------------after stage " + stage);
         }
 
         if(node.getParent() != null) {
+            log.info("---------------------------------remove node node");
+            log.info("---------------------------------parent node : " + node.getParent());
+            log.info("---------------------------------parent node childs : " + node.getParent().getChilds());
             node.getParent().getChilds().remove(node);
+            log.info("---------------------------------parent node childs : " + node.getParent().getChilds());
+            node.setParent(null);
         }
 
         nodeRepository.delete(node);
@@ -66,6 +83,17 @@ public class NodeService {
         if(type.equalsIgnoreCase("post"))  nodeType = NodeType.POST.toString();
         if(type.equalsIgnoreCase("video"))  nodeType = NodeType.VIDEO.toString();
         node.setNodeType(nodeType);
+        return nodeRepository.save(node);
+    }
+
+    public Node modifyNode(NodeModalForm nodeForm) {
+        Node node = nodeRepository.findById(nodeForm.getId()).orElseThrow();
+        node.setTitle(nodeForm.getTitle());
+        node.setText(nodeForm.getText());
+        node.setComplete(nodeForm.isComplete());
+        node.setRead(nodeForm.isRead());
+        node.setShortDescription(nodeForm.getShortDescription());
+        node.setUrl(nodeForm.getUrl());
         return nodeRepository.save(node);
     }
 }

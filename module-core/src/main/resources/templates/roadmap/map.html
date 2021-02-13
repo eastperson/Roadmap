@@ -138,8 +138,7 @@
     <div id="nodeModal" class="modal">
         <!-- Modal content -->
         <form class="modal-content modalForm" id="form"method="" th:action="@{/roadmap}">
-            <span class="close_modal"><i class="far fa-times-circle"></i></span>
-            <hr/>
+            <div class="close_modal" style="display: none"><i class="fa fa-times-circle"></i></div>
             <nav class="nav nav-pills nav-justified">
                 <button id="modifyBtn" class="nav-link active" aria-current="page" href="#">노드 수정</button>
                 <button id="addBtn" class="nav-link" href="#">노드 추가</button>
@@ -176,11 +175,11 @@
                         <label for="form-url" class="col-form-label">URL</label>
                         <input type="text" id="form-url" name="url" class="form-control">
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <label class="col-form-label flex-fill p-2">완료</label>
-                        <input type="checkbox" id="form-complete" name="complete" class="form-control flex-fill p-2 mr-3">
-                        <label for="form-read" class="col-form-label flex-fill p-2">읽음</label>
-                        <input type="checkbox" id="form-read" name="read" class="form-control flex-fill p-2 mr-3">
+                    <div class="form-check mt-3">
+                        <input type="checkbox" id="form-complete" name="complete" class="form-check-input mr-5">
+                        <label class="form-check-label mr-5">완료</label>
+                        <input type="checkbox" id="form-read" name="read" class="form-check-input mr-5">
+                        <label for="form-read" class="form-check-label mr-5">읽음</label>
                     </div>
                     <div>
                         <label for="form-text" class="col-form-label">텍스트</label>
@@ -315,7 +314,7 @@
                         }
                     });
                 });
-            }
+            };
 
             function prAddNode(params){
 
@@ -340,14 +339,72 @@
                         }
                     });
                 });
+            };
+
+            function prModifyNode(params){
+
+                let formData = params.formData;
+
+                return new Promise(function (resolve,reject) {
+                    $.ajax({
+                        url: "/roadmap/api/" + path + "/node/modify",
+                        processData: false,
+                        contentType: 'application/json',
+                        data : JSON.stringify(formData),
+                        type: 'PUT',
+                        dataType: 'json',
+                        beforeSend : function (xhr) {
+                            xhr.setRequestHeader('Accept', "application/json");
+                            xhr.setRequestHeader('Authorization', "Bearer " + roadmapAppKey);
+                        },
+                        success: function (result) {
+                            resolve(result);
+                        },
+                        error : function (result) {
+                            reject(result)
+                        }
+                    });
+                });
+
             }
+
+            function prRemoveNode(params){
+                let formData = params.formData;
+
+                return new Promise(function (resolve,reject) {
+                    $.ajax({
+                        url: "/roadmap/api/" + path + "/node/remove",
+                        processData: false,
+                        contentType: 'application/json',
+                        data : JSON.stringify(formData),
+                        type: 'DELETE',
+                        dataType: 'json',
+                        beforeSend : function (xhr) {
+                            xhr.setRequestHeader('Accept', "application/json");
+                            xhr.setRequestHeader('Authorization', "Bearer " + roadmapAppKey);
+                        },
+                        success: function (result) {
+                            console.log("----------------success");
+                            console.log(result);
+                            resolve(result);
+                        },
+                        error : function (result) {
+                            console.log("----------------error");
+                            console.log(result);
+                            reject(result)
+                        }
+                    });
+                });
+            };
 
 
             return{
                 addNewStage : addNewStage,
                 prAddNewStage : prAddNewStage,
                 prGetStageList : prGetStageList,
-                prAddNode : prAddNode
+                prAddNode : prAddNode,
+                prModifyNode : prModifyNode,
+                prRemoveNode : prRemoveNode
             }
 
         })();
@@ -366,6 +423,8 @@
 
         let modifyBtnNodeHandler = function (e) {
             e.preventDefault();
+            addBtn.classList.remove("active");
+            modifyBtn.classList.add("active");
             document.querySelector(".modal-modify").setAttribute("style","display:block");
             addSubmitBtn.setAttribute("style","display:none");
             modifySubmitBtn.setAttribute("style","display:block");
@@ -374,40 +433,13 @@
 
         let addBtnNodeHandler = function (e) {
             e.preventDefault();
+            addBtn.classList.add("active");
+            modifyBtn.classList.remove("active");
             addSubmitBtn.setAttribute("style","display:block");
             modifySubmitBtn.setAttribute("style","display:none");
             document.querySelector(".modal-modify").setAttribute("style","display:none");
             document.querySelector(".modal-add").setAttribute("style","display:block");
         };
-
-        let modifySubmitBtnNodeHandler = function (e){
-            e.preventDefault();
-            let formData = new {};
-            let inputData = $(".modal-modify input");
-            for (let i = 0; i < inputData.length; i++) {
-                formData.append($(".modal-modify input")[i].name, $(".modal-modify input")[i].value)
-            }
-
-            $.ajax({
-                url: "/roadmap/api/" + path + "/node/modify",
-                processData: false,
-                contentType: 'application/json',
-                data : formData, type: 'POST',
-                dataType: 'json',
-                beforeSend : function (xhr) {
-                    xhr.setRequestHeader('Authorization', "Bearer " + roadmapAppKey);
-                },
-                success: function (result) {
-                    alert(result);
-                    console.log(result);
-                    nodeModal.setAttribute("style", "{display : none}")
-                }
-            });
-        };
-
-
-
-
 
 
         closeBtn.addEventListener("click",(e) => {
@@ -457,8 +489,6 @@
         modifyBtn.addEventListener("click",modifyBtnNodeHandler);
 
         addBtn.addEventListener("click", addBtnNodeHandler);
-
-        modifySubmitBtn.addEventListener("click",modifySubmitBtnNodeHandler);
 
     </script>
     <script>
@@ -645,20 +675,25 @@
                 var sys = arbor.ParticleSystem(700, 700, 0.5);
                 sys.renderer = Renderer("#viewport");
 
-                let recursionNode = function (childNodeList, count, index,parentType,parentId){
+                let recursionNode = function (childNodeList,parentType,parentId){
+                    console.log("=========================================");
                     console.log("node list : "+childNodeList);
-                    console.log("count : "+count);
+                    console.log("parentType : " + parentType);
+                    console.log("parentId : " + parentId);
                     if(childNodeList.length > 0)
-                        childNodeList.forEach((node,j) => {
-                            sys.addNode('Node ' + (count), {name : node.title, nodecolor:"#888888",
+                        childNodeList.forEach(node => {
+                            console.log("----------------------------------------");
+                            console.log("node : " + node);
+                            sys.addNode('Node ' + node.id, {name : node.title, nodecolor:"#888888",
                                 id : node.id,
-                                parentType : parentType, parentId : parentId,
+                                parentType : "node", parentId : parentId,
                                 nodeType : node.nodeType, title:node.title,
                                 shortDescription:node.shortDescription, url : node.url,
                                 complete : node.complete, read : node.read, text:node.text});
-                            sys.addEdge('Node ' + (index+1), 'Node ' + (count), {linkcolor: "#888888"});
+                            if(parentType === 'stage' ) sys.addEdge('Node stage ' + parentId, 'Node ' + node.id, {linkcolor: "#888888"});
+                            else if (parentType === 'node') sys.addEdge('Node ' + parentId, 'Node ' + node.id, {linkcolor: "#888888"});
                             count++;
-                            if(node.childs.length > 0) recursionNode(node.childs, count, count-2,"node",node.id);
+                            if(node.childs.length > 0) recursionNode(node.childs,"node",node.id);
                         });
                     else return;
                 }
@@ -668,21 +703,23 @@
 
                 stageList.sort((s1,s2) => {return s1.ord - s2.ord})
 
+                let prev = 0;
                 stageList.forEach((stage,i) => {
                     if(stage.head)
-                        sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#88cc88",link:'/',
+                        sys.addNode('Node stage ' + stage.id, {name : stage.title, nodecolor:"#88cc88",
                             id : stage.id, parentType: 'stage',title:stage.title});
                     else if (stage.tail)
-                        sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#ff8888",
+                        sys.addNode('Node stage ' + stage.id, {name : stage.title, nodecolor:"#ff8888",
                             id : stage.id, parentType: 'stage',title:stage.title});
                     else
-                        sys.addNode('Node ' + (i+1), {name : stage.title, nodecolor:"#6CC0BA",
+                        sys.addNode('Node stage ' + stage.id, {name : stage.title, nodecolor:"#6CC0BA",
                             id : stage.id, parentType: 'stage',title:stage.title});
-                    if(len > i+1)
-                        sys.addEdge('Node ' + (i+1), 'Node ' + (i+2), {linkcolor: "#888888",
+                    if(len >= i+1 && prev !== 0)
+                        sys.addEdge('Node stage ' + stage.id, 'Node stage ' + prev, {linkcolor: "#888888",
                             id : stage.id, parentType: 'stage',title:stage.title});
 
-                    recursionNode(stage.nodeList,count, i,"node",stage.id);
+                    prev = stage.id;
+                    recursionNode(stage.nodeList,"stage",stage.id);
                 });
                 /*
                 sys.addNode('Node 1', {name: "Node 1", nodecolor: "#88cc88"});
@@ -741,6 +778,47 @@
 
             });
 
+            let removeSubmitBtnNodeHandler = function (e) {
+                e.preventDefault();
+                let formData = {};
+                let id = document.querySelector("#form-id"),
+                    parentType = document.querySelector("#form-parentType");
+
+                formData["id"] = id.value;
+                formData["parentType"] = parentType.value;
+
+                let params = {formData:formData};
+
+                let p1 = roadmapService.prRemoveNode;
+                let p2 = roadmapService.prGetStageList;
+                let pa = Promise.all([p1,p2]);
+
+                pa.then(value => {
+                    value[0](params).then(result => {
+                        console.log('remove : '+result);
+                        console.dir(result);
+
+                        return p2();
+                    },result => {
+                        console.log('remove error : '+result);
+                        console.dir(result);
+
+                        return p2();
+                    }).then(result => {
+                        console.log('get list success : '+result);
+                        console.dir(result);
+
+                        nodeModal.setAttribute("style", "{display : none}")
+
+                        let canvas = document.querySelector('#viewport');
+                        canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+
+                        draw(result);
+                    });
+                });
+
+            }
+
             let addSubmitBtnNodeHandler = function (e) {
                 e.preventDefault();
                 let formData = {};
@@ -778,26 +856,52 @@
                         draw(result);
                     });
                 });
+            };
 
-                // $.ajax({
-                //     url: "/roadmap/api/" + path + "/node/new",
-                //     contentType: "application/json;charset=utf-8",
-                //     data: JSON.stringify(formData),
-                //     type: 'POST',
-                //     dataType: 'json',
-                //     beforeSend : function (xhr) {
-                //         xhr.setRequestHeader('Accept', "application/json");
-                //         xhr.setRequestHeader('Authorization', "Bearer " + roadmapAppKey);
-                //     },
-                //     success: function (result) {
-                //         alert(result);
-                //         console.log(result);
-                //         nodeModal.setAttribute("style", "{display : none}")
-                //     }
-                // });
+            let modifySubmitBtnNodeHandler = function (e){
+                e.preventDefault();
+                let formData = {};
+                let inputData = $(".modal-modify input");
+                for (let i = 0; i < inputData.length; i++) {
+                    if(inputData[i].name.toString().includes("id") || inputData[i].name.toString().includes("Id")) formData[inputData[i].name] = parseInt(inputData[i].value);
+                    else if(inputData[i].name.toString() === "read" || inputData[i].name.toString() === "complete" ) formData[inputData[i].name] = inputData[i].checked;
+                    else formData[inputData[i].name] = inputData[i].value;
+
+                    console.log(inputData[i].name);
+                    console.log(inputData[i].value);
+                };
+
+                let params = {formData:formData};
+
+                let p1 = roadmapService.prModifyNode;
+                let p2 = roadmapService.prGetStageList;
+                let pa = Promise.all([p1,p2]);
+
+                pa.then(value => {
+                    value[0](params).then(result => {
+                        console.log('add new stage success : '+result);
+                        console.dir(result);
+
+                        return p2();
+                    }).then(result => {
+                        console.log('get list success : '+result);
+                        console.dir(result);
+
+                        nodeModal.setAttribute("style", "{display : none}")
+
+                        let canvas = document.querySelector('#viewport');
+                        canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+
+                        draw(result);
+                    });
+                });
             };
 
             addSubmitBtn.addEventListener("click", addSubmitBtnNodeHandler);
+
+            modifySubmitBtn.addEventListener("click",modifySubmitBtnNodeHandler);
+
+            removeBtn.addEventListener("click",removeSubmitBtnNodeHandler,removeSubmitBtnNodeHandler);
 
         })(this.jQuery);
     </script>

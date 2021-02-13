@@ -12,13 +12,11 @@ public class NodeModalForm {
     @NotBlank
     private Long id;
 
-    @NotBlank
     private Long parentId;
 
     @NotBlank
     private String parentType;
 
-    @NotBlank
     private String nodeType;
 
     @NotBlank @Length(max = 25)
