@@ -106,12 +106,12 @@ public class RoadmapRepositoryTest {
         log.info("roadmap stage node list : " + roadmap.getStageList().get(0).getNodeList());
     }
 
-    @Test
-    void findNodeWithById(){
-        Node node = nodeRepository.findById(130L).orElseThrow();
-
-        log.info(node.getStage());
-    }
+//    @Test
+//    void findNodeWithById(){
+//        Node node = nodeRepository.findById(130L).orElseThrow();
+//
+//        log.info(node.getStage());
+//    }
 /*
     @Test
     void test() throws JsonProcessingException {

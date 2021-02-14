@@ -82,6 +82,7 @@ public class RoadmapController {
     @GetMapping("/roadmap/{path}/members")
     public String viewMember(@CurrentUser Member member, @PathVariable String path, Model model) {
         Roadmap roadmap = roadmapRepository.findWithMembersByPath(path);
+        model.addAttribute(member);
         model.addAttribute(roadmap);
 
         return "roadmap/member";
@@ -103,6 +104,7 @@ public class RoadmapController {
                     });
                 });
 
+        model.addAttribute(member);
         model.addAttribute("stageList",objectMapper.writeValueAsString(roadmap.getStageList()));
         model.addAttribute("roadmapAppKey", appProperties.getRoadmapApiKey());
         model.addAttribute("host",appProperties.getHost());

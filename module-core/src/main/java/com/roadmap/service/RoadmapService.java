@@ -4,6 +4,7 @@ import com.roadmap.dto.roadmap.form.*;
 import com.roadmap.model.Member;
 import com.roadmap.model.Roadmap;
 import com.roadmap.model.Stage;
+import com.roadmap.model.Tag;
 import com.roadmap.repository.MemberRepository;
 import com.roadmap.repository.RoadmapRepository;
 import com.roadmap.repository.StageRepository;
@@ -91,7 +92,7 @@ public class RoadmapService {
                 if(s.getOrd() > stage.getOrd()) s.setOrd(s.getOrd()-1);
             });
             int size = roadmap.getStageList().size();
-            roadmap.getStageList().get(size-1).setTail(true);
+            if(size > 1) roadmap.getStageList().get(size-1).setTail(true);
             stageRepository.delete(stage);
         }
     }
@@ -101,5 +102,57 @@ public class RoadmapService {
         stage.setTitle(nodeForm.getTitle());
         stage.setComplete(nodeForm.isComplete());
         return stageRepository.save(stage);
+    }
+
+    public void updateRoadmapImage(Roadmap roadmap, String image) {
+        roadmap.setImage(image);
+    }
+
+    public void enableRoadmapBanner(Roadmap roadmap) {
+        roadmap.setUseBanner(true);
+    }
+
+    public void disableRoadmapBanner(Roadmap roadmap) {
+        roadmap.setUseBanner(false);
+    }
+
+    public void addTag(Roadmap roadmap, Tag tag) {
+        roadmap.getTags().add(tag);
+    }
+
+    public void removeTag(Roadmap roadmap, Tag tag) {
+        roadmap.getTags().remove(tag);
+    }
+
+    public void publish(Roadmap roadmap) {
+        roadmap.publish();
+    }
+
+    public void close(Roadmap roadmap) {
+        roadmap.close();
+    }
+
+    public void startRecruit(Roadmap roadmap) {
+        roadmap.startRecruit();
+    }
+
+    public void stopRecruit(Roadmap roadmap) {
+        roadmap.stopRecruit();
+    }
+
+    public void updateRoadmapPath(Roadmap roadmap, RoadmapPathForm roadmapPathForm) {
+        roadmap.setPath(roadmapPathForm.getNewPath());
+    }
+
+    public void updateRoadmapTitle(Roadmap roadmap, RoadmapTitleForm roadmapTitleForm) {
+        roadmap.setTitle(roadmapTitleForm.getNewTitle());
+    }
+
+    public void remove(Roadmap roadmap) {
+        if(roadmap.isRemovable()){
+            roadmapRepository.delete(roadmap);
+        } else{
+            throw new IllegalArgumentException("로드맵을 삭제할 수 없습니다. 비공개로 전환한 뒤 삭제해 주세요.");
+        }
     }
 }

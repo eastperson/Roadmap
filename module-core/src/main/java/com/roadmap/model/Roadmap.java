@@ -22,7 +22,7 @@ import java.util.*;
         @NamedAttributeNode("stageList"),
         @NamedAttributeNode("likeMembers")
 })
-@Entity @ToString(exclude = {"members","tags","likeMembers","stageList","owner"})
+@Entity @ToString(exclude = {"members","tags","likeMembers","stageList","owner","image","fullDescription"})
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
@@ -40,8 +40,8 @@ public class Roadmap extends BaseEntity{
     private boolean published;
     private LocalDateTime publishedDateTime;
 
-    private boolean opened;
-    private LocalDateTime openDateTime;
+    private boolean closed;
+    private LocalDateTime closedDateTime;
 
     private boolean recruiting;
     private LocalDateTime recruitingUpdatedDateTime;
@@ -64,7 +64,7 @@ public class Roadmap extends BaseEntity{
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Member> members = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Tag> tags = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY,mappedBy = "likeRoadmaps")
@@ -108,7 +108,7 @@ public class Roadmap extends BaseEntity{
     }
 
     public void publish(){
-        if(this.opened && !this.published) {
+        if(!this.closed && !this.published) {
             this.published = true;
             this.publishedDateTime = LocalDateTime.now();
         } else {
@@ -116,10 +116,11 @@ public class Roadmap extends BaseEntity{
         }
     }
 
-    public void open(){
-        if(this.published && !this.opened){
-            opened = true;
-            this.openDateTime = LocalDateTime.now();
+
+    public void close(){
+        if(this.published && !this.closed){
+            closed = true;
+            this.closedDateTime = LocalDateTime.now();
         } else {
             throw  new RuntimeException("로드맵을 종료할 수 없습니다. 로드맵을 공개하지 않았거나 이미 종료된 로드맵입니다.");
         }
@@ -143,7 +144,7 @@ public class Roadmap extends BaseEntity{
         }
     }
 
-    private boolean canUpdateRecruiting() {
+    public boolean canUpdateRecruiting() {
         return this.published && this.recruitingUpdatedDateTime == null || this.recruitingUpdatedDateTime.isBefore(LocalDateTime.now().minusHours(1));
     }
 
@@ -157,5 +158,9 @@ public class Roadmap extends BaseEntity{
 
     public void initTail() {
         this.getStageList().stream().forEach(stage -> stage.setTail(false));
+    }
+
+    public boolean isRemovable() {
+        return !this.published; // TODO 모임을 했던 스터디는 삭제할 수 없다.
     }
 }

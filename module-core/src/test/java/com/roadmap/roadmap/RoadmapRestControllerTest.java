@@ -34,9 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -160,7 +158,7 @@ public class RoadmapRestControllerTest {
 
         Stage stage = roadmapService.addNewStage(roadmap,modelMapper.map(stageForm, Stage.class));
 
-        mockMvc.perform(post("/roadmap/api/{path}/stage/remove",roadmap.getEncodedPath())
+        mockMvc.perform(delete("/roadmap/api/{path}/stage/remove",roadmap.getEncodedPath())
                 .param("id",stage.getId().toString())
                 .accept(MediaType.APPLICATION_JSON)
                 .header("Authorization","Bearer " + appProperties.getRoadmapApiKey()))
@@ -247,7 +245,8 @@ public class RoadmapRestControllerTest {
         StageForm stageForm = new StageForm();
         stageForm.setTitle("제목 테스트");
         Stage stage = roadmapService.addNewStage(roadmap,modelMapper.map(stageForm,Stage.class));
-        NodeForm nodeForm = new NodeForm();
+        NodeAddForm nodeForm = new NodeAddForm();
+        nodeForm.setId(stage.getId());
         nodeForm.setNodeType("text");
         nodeForm.setTitle("노드 제목 테스트");
         nodeForm.setParentType("stage");

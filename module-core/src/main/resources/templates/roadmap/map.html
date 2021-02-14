@@ -129,6 +129,7 @@
 <div class="container">
     <div th:replace="fragments.html :: roadmap-info"></div>
     <div th:replace="fragments.html :: roadmap-menu(roadmapMenu='map')"></div>
+
     <button class="btn btn-outline-primary" id="stage-add">스테이지 추가</button>
     <button class="btn btn-outline-primary" id="modal-flag">수정하기</button>
 
@@ -925,10 +926,6 @@
      */
 </script>
 <div th:replace="fragments.html :: ajax-csrf-header"></div>
-<script type="application/javascript">
-    $(function (){
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-</script>
+<script th:replace="fragments.html :: tooltip"></script>
 </body>
 </html>

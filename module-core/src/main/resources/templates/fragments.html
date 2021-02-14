@@ -144,14 +144,14 @@
                       title="로드맵 공개 준비중">
                     <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>DRAFT</button>
                 </span>
-            <span th:if="${!roadmap.opened}"
-                  class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="로드맵 종료함">
+            <span th:if="${roadmap.closed}"
+                  class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="로드맵 종료됨">
                     <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>CLOSED</button>
                 </span>
             <span th:if="${!roadmap.recruiting}"
                   class="d-inline-block ml-1" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="팀원 모집중 아님">
                     <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>OFF</button>
-                </span>
+            </span>
             <span sec:authorize="isAuthenticated()" th:if="${roadmap.isJoinable(#authentication.principal)}"
                   class="btn-group" role="group" aria-label="Basic example">
                     <a class="btn btn-primary" th:href="@{'/roadmap/' + ${roadmap.path} + '/join'}">
@@ -161,7 +161,7 @@
                        th:text="${roadmap.members.size()}">1</a>
                 </span>
             <span sec:authorize="isAuthenticated()"
-                  th:if="${roadmap.opened && roadmap.isMember(#authentication.principal)}" class="btn-group" role="group">
+                  th:if="${roadmap.closed && roadmap.isMember(#authentication.principal)}" class="btn-group" role="group">
                     <a class="btn btn-outline-warning" th:href="@{'/roadmap/' + ${roadmap.path} + '/leave'}">
                         로드맵 탈퇴
                     </a>
@@ -169,7 +169,7 @@
                        th:text="${roadmap.members.size()}">1</a>
                 </span>
             <span sec:authorize="isAuthenticated()"
-                  th:if="${roadmap.published && roadmap.opened && roadmap.isOwner(#authentication.principal)}">
+                  th:if="${roadmap.published && roadmap.closed && roadmap.isOwner(#authentication.principal)}">
                     <a class="btn btn-outline-primary" th:href="@{'/roadmap/' + ${roadmap.path} + '/new-event'}">
                         <i class="fa fa-plus"></i> 모임 만들기
                     </a>
@@ -223,11 +223,11 @@
     <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'description'}? active" href="#" th:href="@{'/roadmap/'+${roadmap.path}+'/settings/description'}">소개</a>
     <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'image'}? active" href="#" th:href="@{'/roadmap/'+${roadmap.path}+'/settings/banner'}">배너 이미지</a>
     <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'tags'}? active" href="#" th:href="@{'/roadmap/'+${roadmap.path}+'/settings/tags'}">로드맵 주제</a>
-    <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'roadmap}? active" href="#" th:href="@{'/roadmap/'+${roadmap.path}+'/settings/roadmap'}">로드맵</a>
+    <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'roadmap'}? active" href="#" th:href="@{'/roadmap/'+${roadmap.path}+'/settings/roadmap'}">로드맵</a>
 </div>
 
-<div th:fragment="roadmap-banner" th:if="roadmap.useBanner" class="row" id="roadmap-logo">
-    <img th:src="${roadmap.image}">
+<div th:fragment="roadmap-banner" th:if="${roadmap.useBanner}" class="row" id="roadmap-logo">
+    <img th:if="${!#string.isEmpty(roadmap?.image)}" th:src="${roadmap?.image}">
 </div>
 
 <div th:fragment="owner(owner,isOwner)" class="row px-3 justify-content-center">
@@ -248,7 +248,7 @@
 <div th:fragment="member-list (members,isOwner)" class="row px-3 justify-content-center">
     <ul class="list-unstyled col-10">
         <li class="media mt-3" th:each="member: ${members}">
-            <svg th:if="${#strings.isEmpty(member?.profileImage) && member.getNickname() != roadmap.getOwner().getNickname()}" th:data-jdenticon-value="${#member.nickname}"
+            <svg th:if="${#strings.isEmpty(member?.profileImage) && member.getNickname() != roadmap.getOwner().getNickname()}" th:data-jdenticon-value="${member.getNickname()}"
                  width="64" height="64" class="rounded border bg-light"></svg>
             <img th:if="${!#strings.isEmpty(member?.profileImage) && member.getNickname() != roadmap.getOwner().getNickname()}" th:src="${member?.profileImage}"
                  width="64" height="64" class="rounded border mr-3"/>
@@ -352,6 +352,12 @@
             })
         })(this.jQuery);
     </script>
+</div>
+<div th:fragment="message" th:if="${message}" class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+    <span th:text="${message}">완료</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 
 <div th:fragment="date-time">
@@ -613,9 +619,13 @@
         $(".alert_closebtn").on("click", e => {
             $(e.target).parent().addClass("hide");
             $(e.target).parent().removeClass("show");
-            //setTimeout($(e.target).parent().removeClass("showAlert"),5000);
+            //setTimeout($(e.target).parent().removeClass(x"showAlert"),5000);
         });
     </script>
 </div>
-
+<script th:fragment="tooltip" type="application/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
 </html>
