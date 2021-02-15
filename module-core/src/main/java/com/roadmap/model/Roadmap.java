@@ -22,6 +22,9 @@ import java.util.*;
         @NamedAttributeNode("stageList"),
         @NamedAttributeNode("likeMembers")
 })
+@NamedEntityGraph(name = "Roadmap.withOwner", attributeNodes = {
+        @NamedAttributeNode("owner")
+})
 @Entity @ToString(exclude = {"members","tags","likeMembers","stageList","owner","image","fullDescription"})
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor

@@ -52,7 +52,7 @@ public class RoadmapService {
         return roadmap;
     }
 
-    private Roadmap getRoadmap(String path) {
+    public Roadmap getRoadmap(String path) {
         Roadmap roadmap = roadmapRepository.findByPath(path);
         if(roadmap == null) {
             throw new IllegalArgumentException(path + "에 해당하는 스터디가 없습니다.");
@@ -153,6 +153,19 @@ public class RoadmapService {
             roadmapRepository.delete(roadmap);
         } else{
             throw new IllegalArgumentException("로드맵을 삭제할 수 없습니다. 비공개로 전환한 뒤 삭제해 주세요.");
+        }
+    }
+
+    public Roadmap getRoadmapToUpdateStatus(Member member, String path) {
+        Roadmap roadmap = roadmapRepository.findRoadmapWithOwnerByPath(path);
+        checkIfExistingRoadmap(path,roadmap);
+        checkIfOwner(member,roadmap);
+        return roadmap;
+    }
+
+    private void checkIfExistingRoadmap(String path, Roadmap roadmap) {
+        if(roadmap == null){
+            throw new IllegalArgumentException(path +"에 해당하는 로드맵이 없습니다.");
         }
     }
 }

@@ -17,4 +17,7 @@ public interface RoadmapRepository extends JpaRepository<Roadmap, Long> {
 
     @EntityGraph(value = "Roadmap.withAll", type = EntityGraph.EntityGraphType.LOAD)
     Roadmap findWithAllByPath(String path);
+
+    @EntityGraph(value = "Roadmap.withOwner", type = EntityGraph.EntityGraphType.FETCH)
+    Roadmap findRoadmapWithOwnerByPath(String path);
 }
