@@ -76,6 +76,9 @@ public class Roadmap extends BaseEntity{
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Stage> stageList = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Review> reviews;
+
     public boolean isJoinable(UserMember userMember){
         Member member = userMember.getMember();
         return this.isPublished() && this.isRecruiting() && !this.members.contains(member);

@@ -49,11 +49,11 @@ public class MemberService implements UserDetailsService {
 
 
     public void login(Member member) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                new UserMember(member),
-                member.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_USER")));
-        SecurityContextHolder.getContext().setAuthentication(token);
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                    new UserMember(member),
+                    member.getPassword(),
+                    List.of(new SimpleGrantedAuthority("ROLE_USER")));
+            SecurityContextHolder.getContext().setAuthentication(token);
 
     }
 

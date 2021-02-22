@@ -81,7 +81,7 @@ public class NodeService {
         String nodeType = null;
         if(type.equalsIgnoreCase("text")) nodeType = NodeType.TEXT.toString();
         if(type.equalsIgnoreCase("post"))  nodeType = NodeType.POST.toString();
-        if(type.equalsIgnoreCase("video"))  nodeType = NodeType.VIDEO.toString();
+        if(type.equalsIgnoreCase("video"))  nodeType = NodeType.LINK.toString();
         node.setNodeType(nodeType);
         return nodeRepository.save(node);
     }
