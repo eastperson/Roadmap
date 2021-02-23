@@ -9,7 +9,7 @@
         <h2>포스트 작성</h2>
     </div>
     <div class="row justify-content-center">
-        <form class="needs-validation col-sm-10" th:action="@{/new-post}" th:object="${postForm}" method="post" novalidate>
+        <form class="needs-validation col-sm-10" th:action="@{'/new-post/'+${nodeId}}" th:object="${postForm}" method="post" novalidate>
             <div class="form-group">
                 <label for="title">포스트 제목</label>
                 <input id="title" type="text" th:field="*{title}" class="form-control" placeholder="포스트 제목" aria-describedby="titleHelp" required max="50">
@@ -63,6 +63,7 @@
 </div>
 <script th:replace="fragments.html :: form-validation"></script>
 <script th:replace="fragments.html :: editor-script"></script>
-<script th:replace="fragments.html :: update-tags (baseUrl = '/post/'+${nodeId}+'/tags')"></script>
+<script th:replace="fragments.html :: update-tags (baseUrl = '/new-post/'+${nodeId}+'/tags')"></script>
+<script th:replace="fragments.html :: ajax-csrf-header"></script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.roadmap.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -20,13 +22,17 @@ import javax.persistence.OneToOne;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity @ToString(exclude = {"roadmap","member"})
+@Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
 @Builder @AllArgsConstructor @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Post {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    private Member writer;
 
     @OneToOne(fetch = FetchType.LAZY)
     private Node node;

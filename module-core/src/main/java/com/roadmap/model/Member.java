@@ -94,6 +94,9 @@ public class Member extends BaseEntity{
     @ManyToMany(fetch = FetchType.LAZY,mappedBy = "members")
     private List<Roadmap> roadmaps = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Post> posts = new ArrayList<>();
+
     public void addMemberRole(MemberRole memberRole){
         roleSet.add(memberRole);
     }

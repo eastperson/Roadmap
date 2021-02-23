@@ -359,6 +359,32 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
+<div th:fragment="post-nav">
+    <div class="row pt-4 text-left justify-content-center bg-light">
+        <div class="col-6">
+            <a href="#" class="text-decoration-none" th:href="@{'/post/' + ${post.id}}">
+                <span class="h2" th:text="${post.title}">로드맵 이름</span>
+            </a>
+        </div>
+    </div>
+    <div class="row justify-content-center bg-light">
+        <div class="col-10">
+            <p class="lead" th:text="${post.description}"></p>
+        </div>
+    </div>
+    <div class="row justify-content-center bg-light">
+        <div class="col-10">
+            <p>
+                <span th:each="tag: ${post.tags}"
+                      class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
+                    <a th:href="@{'/search/tag/' + ${tag.title}}" class="text-decoration-none text-white">
+                        <i class="fa fa-tag"></i> <span th:text="${tag.title}">Tag</span>
+                    </a>
+                </span>
+            </p>
+        </div>
+    </div>
+</div>
 
 <div th:fragment="date-time">
     <script src="/node_modules/moment/min/moment-with-locales.min.js"></script>

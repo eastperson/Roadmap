@@ -154,15 +154,15 @@
                 <div class="modal-modify">
                     <div>
                         <label for="form-id" class="col-form-label">아이디</label>
-                        <input type="text" id="form-id" name="id" class="form-control">
+                        <input type="text" id="form-id" name="id" class="form-control" readonly>
                     </div>
                     <div>
                         <label for="form-parentId" class="col-form-label">Parent 아이디</label>
-                        <input type="text" id="form-parentId" name="parentId" class="form-control">
+                        <input type="text" id="form-parentId" name="parentId" class="form-control" readonly>
                     </div>
                     <div>
                         <label for="form-parentType" class="col-form-label">Parent 타입</label>
-                        <input type="text" id="form-parentType" name="parentType" class="form-control">
+                        <input type="text" id="form-parentType" name="parentType" class="form-control" readonly>
                     </div>
                     <div>
                         <label for="form-title" class="col-form-label">타이틀</label>
@@ -188,7 +188,10 @@
                     </div>
                     <div>
                         <label for="form-title">노드 타입</label>
-                        <input type="text" name="nodeType" class="form-control">
+                        <input type="text" id="form-nodeType" name="nodeType" class="form-control" readonly>
+                    </div>
+                    <div id="btnAddPostDiv" style="display: none">
+                        <button class="btn btn-warning" id="btnAddPost">포스트 작성</button>
                     </div>
                 </div>
                 <div class="modal-add" style="display: none">
@@ -210,7 +213,11 @@
                     </div>
                     <div>
                         <label for="form-title">노드 타입</label>
-                        <input type="text"  name="nodeType" class="form-control">
+                        <select class="form-select" aria-label="Default select example" name="nodeType">
+                            <option value="text" selected>Text</option>
+                            <option value="post">Post</option>
+                            <option value="link">Link</option>
+                        </select>
                     </div>
                 </div>
                 <div id="modal-stage-add">
@@ -523,8 +530,7 @@
                         inputUrl = document.querySelector(modalType + 'input[name="url"]'),
                         inputComplete = document.querySelector(modalType + 'input[name="complete"]'),
                         inputRead = document.querySelector(modalType + 'input[name="read"]'),
-                        inputText = document.querySelector(modalType + 'input[name="text"]'),
-                        inputNodeType = document.querySelector(modalType + 'input[name="nodeType"]');
+                        inputText = document.querySelector(modalType + 'input[name="text"]');
 
                     console.log('----------------------input title');
                     console.dir(inputTitle);
@@ -532,9 +538,8 @@
                     modalTitle.textContent = nodeData.name + ' 노드 설정';
                     inputId.value = nodeData.id;
                     inputParentType.value = nodeData.parentType;
-                    inputNodeType.value = 'text';
+                    inputNodeType.value = nodeData.nodeType;
                     inputTitle.value = nodeData.title;
-
 
                 };
             };
@@ -565,16 +570,18 @@
                         inputComplete = document.querySelector(modalType + 'input[name="complete"]'),
                         inputRead = document.querySelector(modalType + 'input[name="read"]'),
                         inputText = document.querySelector(modalType + 'input[name="text"]'),
-                        inputNodeType = document.querySelector(modalType + 'input[name="nodeType"]');
+                        inputNodeType = document.querySelector(modalType + 'input[name="nodeType"]'),
+                        btnAddPostDiv = document.querySelector('#btnAddPostDiv'),
+                        btnAddPost = document.querySelector('#btnAddPost');
 
                     console.log('----------------------input title');
                     console.dir(inputTitle);
+                    console.log('input node type : ' + inputNodeType);
 
                     modalTitle.textContent = nodeData.name + ' 노드 설정';
                     inputId.value = nodeData.id;
                     inputParentId.value = nodeData.parentId;
                     inputParentType.value = nodeData.parentType;
-                    inputNodeType.value = nodeData.nodeType;
 
                     if(i !== 1){
                         inputTitle.value = nodeData.title;
@@ -584,6 +591,13 @@
                         if(nodeData.complete) inputComplete.checked = true;
                         if(nodeData.read) inputRead.checked = true;
                         inputText.value = nodeData.text;
+                        inputNodeType.value = nodeData.nodeType;
+                        if(inputNodeType.value === 'post') btnAddPostDiv.style.display = 'block';
+                        else btnAddPostDiv.style.display = 'none';
+                        btnAddPost.addEventListener('click',(e)=>{
+                            e.preventDefault();
+                            location.href = '/new-post/' + inputId.value;
+                        });
                     }
 
                 };
@@ -824,6 +838,7 @@
                 e.preventDefault();
                 let formData = {};
                 let inputData = $(".modal-add input");
+                let selectValue = document.querySelector(".modal-add select").value;
                 for (let i = 0; i < inputData.length; i++) {
                     if(inputData[i].name.toString().includes("id") || inputData[i].name.toString().includes("Id")) formData[inputData[i].name] = parseInt(inputData[i].value);
                     else formData[inputData[i].name] = inputData[i].value;
@@ -831,6 +846,7 @@
                     console.log(inputData[i].name);
                     console.log(inputData[i].value);
                 }
+                formData["nodeType"] = selectValue;
                 console.dir(formData);
 
                 let params = {formData : formData};
@@ -863,6 +879,7 @@
                 e.preventDefault();
                 let formData = {};
                 let inputData = $(".modal-modify input");
+                let selectValue = document.querySelector(".modal-add select").value;
                 for (let i = 0; i < inputData.length; i++) {
                     if(inputData[i].name.toString().includes("id") || inputData[i].name.toString().includes("Id")) formData[inputData[i].name] = parseInt(inputData[i].value);
                     else if(inputData[i].name.toString() === "read" || inputData[i].name.toString() === "complete" ) formData[inputData[i].name] = inputData[i].checked;
@@ -871,7 +888,7 @@
                     console.log(inputData[i].name);
                     console.log(inputData[i].value);
                 };
-
+                formData["nodeType"] = selectValue;
                 let params = {formData:formData};
 
                 let p1 = roadmapService.prModifyNode;
