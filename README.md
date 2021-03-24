@@ -19,7 +19,7 @@
 
 <h2>개발 환경</h2>
 
-![개발환경_v2](https://user-images.githubusercontent.com/66561524/107146813-cb79e280-698d-11eb-9c43-74223dd05327.PNG)
+![image](https://user-images.githubusercontent.com/66561524/112272270-535a4880-8cbf-11eb-935f-85c848c41841.png)
 
 <h2>ERD</h2>
 
