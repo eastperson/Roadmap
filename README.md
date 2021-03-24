@@ -23,7 +23,7 @@
 
 <h2>ERD</h2>
 
-![Roadmap_20210324_32_04](https://user-images.githubusercontent.com/66561524/112271681-94059200-8cbe-11eb-9255-464d3d4ab02a.png) 
+![Roadmap_20210324_32_04](https://user-images.githubusercontent.com/66561524/112271971-ecd52a80-8cbe-11eb-88c3-6838664cd794.png)
 
 <a href="https://aquerytool.com:443/aquerymain/index/?rurl=874a091f-7a0b-493f-a647-3f069f75ab3b">ERD(AQuery, pw : wo74y6)</a></br>
 <a href="https://ovenapp.io/view/psnRKX3ZCL4EY1t6jlvr7gcNiZzUEqjC#JG9iB">화면 정의서</a>
